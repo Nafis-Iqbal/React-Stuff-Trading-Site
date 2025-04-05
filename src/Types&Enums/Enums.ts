@@ -16,4 +16,13 @@ export enum priority{
     normal = "normal"
 }
 
-export{}
+export enum listingStatus{
+    available = "available",
+    sold = "sold",
+    cancelled = "cancelled"
+}
+
+export enum tradeStatus{
+    pending = "pending",
+    completed = "completed"
+}

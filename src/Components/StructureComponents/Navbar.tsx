@@ -2,12 +2,22 @@ import {useState} from 'react';
 import { Link } from 'react-router-dom';
 import { useLogout } from '../../Hooks/UtilHooks';
 import { motion } from "framer-motion";
+import { MessageCircle, Bell } from 'lucide-react';
 
 const Navbar: React.FC = () => {
-  const logoutG = useLogout();
-  const [isDropMenuOpen, setIsDropMenuOpen] = useState(false);
-  
+  const [isMessaggeListOpen, setIsMessageListOpen] = useState(false);
+  const [isNotificationListOpen, setIsNotificationListOpen] = useState(false);
 
+  const onNotificationIconPress = () => {
+    setIsNotificationListOpen(!isNotificationListOpen);
+    setIsMessageListOpen(false);
+  }
+
+  const onMessageIconPress = () => {
+    setIsMessageListOpen(!isMessaggeListOpen);
+    setIsNotificationListOpen(false);
+  }
+  
   return (
     <nav className="relative bg-pink-600 text-white p-4">
       <div className="flex justify-between items-center">
@@ -18,55 +28,80 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-8 mr-5 text-xl md:text-2xl">
-          <Link to="/dashboard" className="hover:text-gray-300">
-            Dashboard
-          </Link>
-          <Link to="/listings" className="hover:text-gray-300">
-            Listings
-          </Link>
-          <Link to="/bids" className="hover:text-gray-300">
-            Bids
-          </Link>
-          <Link to="/trades" className="hover:text-gray-300">
-            Trades
-          </Link>
-          <Link to="/profile" className="hover:text-gray-300">
-            Profile
-          </Link>
-          <button onClick={() => {
-            logoutG();
-          }} className="hover:text-gray-300">
-            Logout
-          </button>
+        {/* Message & Notifications Menu */}
+        <div className="relative flex space-x-6 md:space-x-8 mr-2 md:mr-5 text-xl md:text-2xl">
+          <div className="relative">
+            <MessageCircle className="size-6 md:size-8 text-pink-200 fill-pink-200 cursor-pointer hover:text-pink-400" onClick={() => onMessageIconPress()}/>
+            <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
+              4
+            </span>
+          </div>
+
+          {/* Notification Bell Icon with Badge */}
+          <div className="relative">
+            <Bell className="size-6 md:size-8 text-pink-200 fill-pink-200 cursor-pointer hover:text-pink-400" onClick={() => onNotificationIconPress()}/>
+            <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
+              3
+            </span>
+          </div>
         </div>
-
-        {/* Hamburger Icon */}
-        <button
-          className="md:hidden text-white text-3xl mr-2"
-          onClick={() => setIsDropMenuOpen(!isDropMenuOpen)}
-        >
-          ☰
-        </button>
-
-        {isDropMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-full right-0 bg-gray-100 text-blue-900 text-lg font-semibold rounded-md shadow-lg flex flex-col space-y-4 py-4 pl-4 pr-10 z-50 mobile-menu"
-          >
-            <Link to="/dashboard" className="hover:text-gray-300 border-b border-gray-700" onClick={() => setIsDropMenuOpen(false)}>Dashboard</Link>
-            <Link to="/listings" className="hover:text-gray-300 border-b border-gray-700" onClick={() => setIsDropMenuOpen(false)}>Listings</Link>
-            <Link to="/bids" className="hover:text-gray-300 border-b border-gray-700" onClick={() => setIsDropMenuOpen(false)}>Bids</Link>
-            <Link to="/trades" className="hover:text-gray-300 border-b border-gray-700" onClick={() => setIsDropMenuOpen(false)}>Trades</Link>
-            <Link to="/profile" className="hover:text-gray-300 border-b border-gray-700" onClick={() => setIsDropMenuOpen(false)}>Profile</Link>
-            <button onClick={() => { logoutG(); setIsDropMenuOpen(false); }} className="hover:text-gray-300 text-left border-b border-gray-700">Logout</button>
-          </motion.div>
-        )}
       </div>
+
+      {isMessaggeListOpen && (
+        <div className="absolute top-full right-0 flex flex-col w-[70%] md:w-[25%] p-2 bg-pink-300 rounded-md z-50">
+          <div className='flex justify-between space-x-4'>
+            <div className='flex space-x-5 items-center'>
+              <img src="public/user1.png" alt="User1" className='size-[60px]'></img>
+              <p>User 1</p>
+            </div>
+            
+            <button className='p-2 border-b-2 border-pink-300'>Feature not available</button>
+          </div>
+          
+          <div className='flex justify-between space-x-4'>
+            <div className='flex space-x-5 items-center'>
+              <img src="public/user1.png" alt="User1" className='size-[60px]'></img>
+              <p>User 1</p>
+            </div>
+            
+            <button className='p-2 border-b-2 border-pink-300'>Feature not available</button>
+          </div>
+
+          <div className='flex justify-between space-x-4'>
+            <div className='flex space-x-5 items-center'>
+              <img src="public/user1.png" alt="User1" className='size-[60px]'></img>
+              <p>User 1</p>
+            </div>
+            
+            <button className='p-2 border-b-2 border-pink-300'>Feature not available</button>
+          </div>
+
+          <div className='flex justify-between space-x-4'>
+            <div className='flex space-x-5 items-center'>
+              <img src="public/user1.png" alt="User1" className='size-[60px]'></img>
+              <p>User 1</p>
+            </div>
+            
+            <button className='p-2 border-b-2 border-pink-300'>Feature not available</button>
+          </div>
+        </div>
+      )}
+
+      {isNotificationListOpen && (
+        <div className="absolute top-full right-0 flex flex-col w-[70%] md:w-[25%] p-2 bg-pink-300 rounded-md z-50">
+          <div className='flex justify-between items-center space-x-4'>
+            <button className='p-2 border-b-2 border-pink-300'>This is a notification. Feature not available</button>
+          </div>
+          
+          <div className='flex justify-between items-center space-x-4'>
+            <button className='p-2 border-b-2 border-pink-300'>This is a notification. Feature not available</button>
+          </div>
+
+          <div className='flex justify-between items-center space-x-4'>
+            <button className='p-2 border-b-2 border-pink-300'>This is a notification. Feature not available</button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

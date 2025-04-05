@@ -2,6 +2,59 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import api from './ApiInstance';
 import { AxiosResponse } from 'axios';
 
+export const createUser = async (user_name: string, email: string, password: string, password_confirmation: string): Promise<AxiosResponse> => {
+    try{
+        const response = await api.post<ApiResponse<Auth>>("user/create", {
+            user_name, email, password, password_confirmation
+        });
+
+        return response;
+    }
+    catch(error)
+    {
+        console.log("Error creating new user");
+        throw error;
+    }
+}
+
+export const loginUser = async (email: string, password: string): Promise<AxiosResponse> => {
+    try{
+        const response = await api.post("user/login", {
+            email, password
+        }, {timeout: 360 * 1000});
+        
+        return response;
+    }
+    catch(error)
+    {
+        console.log("Error logging in.");
+        throw error;
+    }
+}
+
+export const getAuthenticatedUser = async (numbe: number): Promise<AxiosResponse> => {
+    try{
+        const response = await api.get<ApiResponse<User>>("user");
+        
+        return response;
+    }
+    catch(error)
+    {
+        console.log("Error fetching authenticated user data");
+        throw error;
+    }
+}
+
+export const useGetAuthenticatedUserRQ = () => {
+    return useQuery({
+        queryKey: ["user"],
+        queryFn: () => getAuthenticatedUser(1),
+        cacheTime: 180 * 1000,
+        staleTime: 180 * 1000,
+        enabled: true
+    });
+}
+
 export const fetchUsers = async (): Promise<AxiosResponse> => {
     try{
         const response = await api.get<ApiResponse<User[]>>("user");
@@ -44,44 +97,6 @@ export const useFetchUserRQ = (user_id: number, onSuccessFn: () => void, onError
     });
 }
 
-export const getAuthenticatedUser = async (numbe: number): Promise<AxiosResponse> => {
-    try{
-        const response = await api.get<ApiResponse<User>>("user");
-        
-        return response;
-    }
-    catch(error)
-    {
-        console.log("Error fetching authenticated user data");
-        throw error;
-    }
-}
-
-export const useGetAuthenticatedUserRQ = () => {
-    return useQuery({
-        queryKey: ["user"],
-        queryFn: () => getAuthenticatedUser(1),
-        cacheTime: 180 * 1000,
-        staleTime: 180 * 1000,
-        enabled: true
-    });
-}
-
-export const createUser = async (user_name: string, email: string, password: string, password_confirmation: string): Promise<AxiosResponse> => {
-    try{
-        const response = await api.post<ApiResponse<Auth>>("user/create", {
-            user_name, email, password, password_confirmation
-        });
-
-        return response;
-    }
-    catch(error)
-    {
-        console.log("Error creating new user");
-        throw error;
-    }
-}
-
 export const updateUser = async (userInfo: User): Promise<AxiosResponse> => {
     try{
         const response = await api.put<ApiResponse<Auth>>("user/update", {
@@ -107,19 +122,4 @@ export const useUpdateUserRQ = (onSuccessFn?: (ApiResponse: any) => void, onErro
             if(onErrorFn)onErrorFn();
         }
     });
-}
-
-export const loginUser = async (email: string, password: string): Promise<AxiosResponse> => {
-    try{
-        const response = await api.post("user/login", {
-            email, password
-        }, {timeout: 360 * 1000});
-        
-        return response;
-    }
-    catch(error)
-    {
-        console.log("Error logging in.");
-        throw error;
-    }
 }

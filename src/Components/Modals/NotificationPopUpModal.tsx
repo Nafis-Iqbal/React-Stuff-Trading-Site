@@ -1,14 +1,22 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import { motion } from "framer-motion";
+import { setNotification } from "../../GlobalStateContext/CommonPopUpSlice";
 
-type ModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  message: string;
-};
+const NotificationPopUp: React.FC = () => {
+  const dispatch = useDispatch();
+  const notificationState: {isVisible: boolean, message: string, type: string} = useSelector((state: any) => state.popUps.notification);
 
-const NotificationPopUp: React.FC<ModalProps> = ({ isOpen, onClose, message }) => {
-  if (!isOpen) return null;
+  const onClose = () => {
+    dispatch(setNotification({
+      isVisible: false,
+      message: '',
+      type: 'info'
+    }));
+  }
+
+  if (!notificationState.isVisible) return null;
 
   return (
     <div
@@ -24,7 +32,7 @@ const NotificationPopUp: React.FC<ModalProps> = ({ isOpen, onClose, message }) =
         transition={{ duration: 0.3, ease: "easeOut" }}
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
       >
-        <p className="text-lg font-semibold">{message}</p>
+        <p className="text-lg font-semibold">{notificationState.message}</p>
         <button
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           onClick={onClose}

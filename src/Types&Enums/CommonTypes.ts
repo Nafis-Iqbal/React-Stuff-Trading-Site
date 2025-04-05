@@ -1,4 +1,4 @@
-import {priority, statusEnum, role} from "../Types&Enums/Enums";
+import {priority, statusEnum, listingStatus, tradeStatus, role} from "../Types&Enums/Enums";
 
 declare global{
     interface User{
@@ -13,10 +13,59 @@ declare global{
         credits?: number;
     }
 
+    interface Listing{
+        id: number;
+        user_id: number;
+        title: string;
+        description: string;
+        location: string;
+        exchange_items: string;
+        price: number;
+        status: listingStatus;
+    }
+
+    interface Bid{
+        id: number;
+        listing_id: number;
+        description: string;
+        amount: number;
+        bidder_id: number;
+    }
+
     interface Tag{
         id: number;
         title: string;
     }
+
+    interface Trade {
+        id: number;
+        listing_id: number;
+        buyer_id: number;
+        seller_id: number;
+        status: tradeStatus;
+        amount: number;
+    }
+
+    interface Rating{
+        id: number;
+        rating: number;
+        listing_id: number;
+        trade_id: number;
+        rating_giver_id: number;
+        rating_taker_id: number;
+        comment: string;
+    }
+
+    interface Transaction{
+        id: number;
+        listing_id: number;
+        trade_id: number;
+        buyer_id: number;
+        seller_id: number;
+        amount: number;
+    }
+
+    
     
     export interface Comments{
         id: number;

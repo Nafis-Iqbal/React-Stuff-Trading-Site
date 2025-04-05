@@ -1,11 +1,10 @@
-import { motion } from "framer-motion";
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { motion } from "framer-motion";
 
-type LoadingModalProps = {
-  isOpen: boolean;
-};
+const LoadingModal: React.FC = () => {
+  const isOpen = useSelector((state: any) => state.popUps.isLoading);
 
-const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
   if (!isOpen) return null;
 
   return (
