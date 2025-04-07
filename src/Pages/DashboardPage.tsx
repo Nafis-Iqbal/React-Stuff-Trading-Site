@@ -79,8 +79,8 @@ const DashboardPage:React.FC = () => {
                                                 listingLocation = {listing.location}
                                                 listingPhoto = {listing?.listingPicture ?? "images/keyboard.jpg"}
                                                 bidsCount = {1}
-                                                bestBidUserName = "nafo"
-                                                bestBidUserPhoto = "nafo.jpg"
+                                                bestBidUserName = "User 1"
+                                                bestBidUserPhoto = "User 1.jpg"
                                                 bestBidDescription = "Best bid!"
                                                 bestBidPrice = {70}
                                                 listingData={listing}
