@@ -40,7 +40,7 @@ const ListingsListPage:React.FC = () => {
     const onCreateListingSuccess = (formData: Listing) => {
         showLoadingContent(false);
 
-        openNotificationPopUpMessage("Tag created successfully!");
+        openNotificationPopUpMessage("Listing created successfully!");
 
         if(listingsListData)
         {
