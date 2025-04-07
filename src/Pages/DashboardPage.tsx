@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-import { useDispatch } from "react-redux";
-import { setNotification } from "../GlobalStateContext/CommonPopUpSlice";
-import { useNavigate } from "react-router-dom";
-import { useLogout } from '../Hooks/UtilHooks';
+import { ListingApi } from "../Services/API";
 
 import ListingViewBlock from "../Components/ElementComponents/ListingViewBlock";
-import OpenSidebarButton from "../Components/StructureComponents/OpenSidebarButton";
 
 const DashboardPage:React.FC = () => {
     const images = [
@@ -18,19 +14,22 @@ const DashboardPage:React.FC = () => {
 
     const [currentBannerImageIndex, setCurrentBannerImageIndex] = useState(0);
     const [fade, setFade] = useState(false);
-    const [isSidebarMenuOpen, setIsSidebarMenuOpen] = useState(false);
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const logoutG = useLogout();
+    const [listingsList, setListingsList] = useState<Listing[]>([]);
 
-    const openNotificationModal = () => {
-        dispatch(setNotification({
-            isVisible: true,
-            message: 'A verry shrewd man.',
-            type: 'info'
-        }))
-    }
+    const {data: listingsListData} = ListingApi.useGetAllListingViewsRQ(
+        () => {
+
+        },
+        () => {
+
+        },
+        true
+    );
+
+    useEffect( () => {
+        setListingsList(listingsListData?.data.data);
+    }, [listingsListData]);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -44,13 +43,17 @@ const DashboardPage:React.FC = () => {
           return () => clearInterval(intervalId);
     }, [images]);
 
+    useEffect(() => {
+        
+    }, []);
+
     return (
         <div className="flex flex-col md:flex-row flex-1 w-[100%] md:w-[80%]">
             {/* Banner Image Section for small screens*/}
             <div className="relative h-[350px] md:hidden py-2 bg-pink-200">
                 <img src={images[currentBannerImageIndex]} alt="Mouse" className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out 
                     ${fade ? 'opacity-0' : 'opacity-100'}`}></img>
-                <button className="absolute bottom-3 right-1 p-2 bg-emerald-400 text-white rounded-sm">View Listing</button>
+                <button className="absolute bottom-3 right-1 p-2 bg-emerald-400 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-sm" disabled>View Listing</button>
             </div>
             
             {/* Main content */}
@@ -59,39 +62,33 @@ const DashboardPage:React.FC = () => {
                 <div className="flex py-4 justify-between bg-pink-200 border-b-4 border-pink-400">
                     <h3 className="p-2 text-xl md:text-2xl mr-10 font-semibold text-gray-700">Got something to trade?</h3>
                     
-                    <button className="p-2 mr-1 md:mr-3 bg-emerald-400 hover:bg-emerald-500 text-sm md:text-base text-white rounded-sm">Get Started</button>
+                    <button className="p-2 mr-1 md:mr-3 bg-emerald-400 hover:bg-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm md:text-base text-white rounded-sm" disabled>Get Started</button>
                 </div>
 
                 {/* Listings browse list */}
                 <div className="bg-pink-200 flex flex-1">
                     <div className="flex-1 max-h-[750px] overflow-y-auto p-3 m-3 box-border rounded-md bg-pink-300">
                         <ul className="space-y-4">
-                            <li>
-                                <ListingViewBlock 
-                                    listingTitle="Listing 1" 
-                                    description="3 boxes"
-                                    listingLocation="Dhaka"
-                                    bidsCount={4}
-                                    listingPhoto="images/mouse.jpg"
-                                    bestBidUserName="Nafi"
-                                    bestBidUserPhoto="images/profile_picture.jpg"
-                                    bestBidDescription="4 box needed"
-                                    bestBidPrice={50}
-                                />
-                            </li>
-                            <li>
-                                <ListingViewBlock 
-                                    listingTitle="Listing 1"
-                                    description="4 Boxes" 
-                                    listingLocation="Dhaka"
-                                    bidsCount={3}
-                                    listingPhoto="images/keyboard.jpg"
-                                    bestBidUserName="Nafis"
-                                    bestBidUserPhoto="images/profile_picture.jpg"
-                                    bestBidDescription="4 box needed ASAP"
-                                    bestBidPrice={50}
-                                />
-                            </li>
+                            {listingsList && listingsList.length > 0 && (listingsList.map(
+                                (listing) => {
+                                    return (
+                                        <li>
+                                            <ListingViewBlock key={listing.id}
+                                                listingTitle = {listing.title}
+                                                description = {listing.description}
+                                                listingLocation = {listing.location}
+                                                listingPhoto = {listing?.listingPicture ?? "images/keyboard.jpg"}
+                                                bidsCount = {1}
+                                                bestBidUserName = "nafo"
+                                                bestBidUserPhoto = "nafo.jpg"
+                                                bestBidDescription = "Best bid!"
+                                                bestBidPrice = {70}
+                                                listingData={listing}
+                                            />
+                                        </li>
+                                    );
+                                }
+                            ))}
                         </ul>
                     </div>
                 </div>
@@ -103,14 +100,14 @@ const DashboardPage:React.FC = () => {
                     <img src={images[currentBannerImageIndex]} alt="some product" className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out 
                     ${fade ? 'opacity-0' : 'opacity-100'}`}></img>
 
-                    <button className="absolute bottom-3 right-2 p-2 bg-emerald-400 hover:bg-emerald-500 text-white rounded-md">View Listing</button>
+                    <button className="absolute bottom-3 right-2 p-2 bg-emerald-400 hover:bg-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md" disabled>View Listing</button>
                 </div>
 
                 <div className="relative h-[50%] bg-pink-200 border-b-4 border-pink-500">
                     <img src={images[(currentBannerImageIndex + 2) % images.length]} alt="some product" className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out 
                     ${fade ? 'opacity-0' : 'opacity-100'}`}></img>
 
-                    <button className="absolute bottom-3 right-2 p-2 bg-emerald-400 hover:bg-emerald-500 text-white rounded-md">View Listing</button>
+                    <button className="absolute bottom-3 right-2 p-2 bg-emerald-400 hover:bg-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md" disabled>View Listing</button>
                 </div>
             </aside>
         </div>

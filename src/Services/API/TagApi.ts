@@ -56,7 +56,7 @@ export const useUpdateTagRQ = (onSuccessFn: (ApiResponse: any) => void, onErrorF
 
 export const deleteTag = async (id: number): Promise<AxiosResponse> => {
     try {
-        const response = await api.delete<ApiResponse<string>>(`tags/delete/${id}`);
+        const response = await api.delete<ApiResponse<string>>(`tags/delete?id=${id}`);
 
         return response;
     }
@@ -80,7 +80,7 @@ export const useDeleteTagRQ = (onSuccessFn: () => void, onErrorFn: () => void) =
 
 export const getAllTags = async (): Promise<AxiosResponse> => {
     try {
-        const response = await api.get<ApiResponse<Tag[]>>("tags");
+        const response = await api.get<ApiResponse<Tag[]>>("tags/index");
 
         return response;
     }
@@ -90,7 +90,7 @@ export const getAllTags = async (): Promise<AxiosResponse> => {
     }
 };
 
-export const useGetAllTagsRQ = (onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetAllTagsRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: getAllTags,
         queryKey: ["tags"],
@@ -101,7 +101,8 @@ export const useGetAllTagsRQ = (onSuccessFn: () => void, onErrorFn: () => void) 
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 };
 
@@ -117,7 +118,7 @@ export const getListingsByTag = async (id: number): Promise<AxiosResponse> => {
     }
 };
 
-export const useGetListingsByTagRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetListingsByTagRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: () => getListingsByTag(id),
         queryKey: ["listingsByTag", id],
@@ -128,6 +129,7 @@ export const useGetListingsByTagRQ = (id: number, onSuccessFn: () => void, onErr
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 };

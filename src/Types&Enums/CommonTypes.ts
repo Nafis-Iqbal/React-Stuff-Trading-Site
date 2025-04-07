@@ -11,6 +11,8 @@ declare global{
         profile_picture?: string;
         rating?: number;
         credits?: number;
+        totalListings?: number;
+        totalTrades?: number;
     }
 
     interface Listing{
@@ -22,14 +24,17 @@ declare global{
         exchange_items: string;
         price: number;
         status: listingStatus;
+        bidsCount?: number;
+        listingPicture?: string;
     }
 
     interface Bid{
-        id: number;
+        id?: number;
         listing_id: number;
         description: string;
         amount: number;
         bidder_id: number;
+        bidder_name?: string;
     }
 
     interface Tag{

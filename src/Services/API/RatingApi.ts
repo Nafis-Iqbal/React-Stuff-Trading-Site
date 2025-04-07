@@ -76,7 +76,7 @@ export const getAllRatings = async (): Promise<AxiosResponse> => {
     }
 };
 
-export const useGetAllRatingsRQ = (onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetAllRatingsRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: getAllRatings,
         queryKey: ["ratings"],
@@ -87,7 +87,8 @@ export const useGetAllRatingsRQ = (onSuccessFn: () => void, onErrorFn: () => voi
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 };
 
@@ -103,7 +104,7 @@ export const getRatingDetail = async (id: number): Promise<AxiosResponse> => {
     }
 };
 
-export const useGetRatingDetailRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetRatingDetailRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: () => getRatingDetail(id),
         queryKey: ["ratingDetail", id],
@@ -114,7 +115,8 @@ export const useGetRatingDetailRQ = (id: number, onSuccessFn: () => void, onErro
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 };
 
@@ -130,7 +132,7 @@ export const getUserGivenRatings = async (id: number): Promise<AxiosResponse> =>
     }
 };
 
-export const useGetUserGivenRatingsRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetUserGivenRatingsRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: () => getUserGivenRatings(id),
         queryKey: ["userGivenRatings", id],
@@ -141,7 +143,8 @@ export const useGetUserGivenRatingsRQ = (id: number, onSuccessFn: () => void, on
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 };
 
@@ -157,7 +160,7 @@ export const getUserAcceptedRatings = async (id: number): Promise<AxiosResponse>
     }
 };
 
-export const useGetUserAcceptedRatingsRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetUserAcceptedRatingsRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: () => getUserAcceptedRatings(id),
         queryKey: ["userAcceptedRatings", id],
@@ -168,6 +171,7 @@ export const useGetUserAcceptedRatingsRQ = (id: number, onSuccessFn: () => void,
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 };

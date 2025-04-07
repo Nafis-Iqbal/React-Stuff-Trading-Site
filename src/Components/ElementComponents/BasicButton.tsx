@@ -2,8 +2,6 @@ import React from 'react';
 
 const BasicButton = <T extends unknown>({
     buttonText,
-    buttonColor,
-    textColor,
     onClick,
     customStyle,
     value,
@@ -11,7 +9,7 @@ const BasicButton = <T extends unknown>({
 
     return(
         <button 
-            className={`md:px-2 md:py-2 rounded-md md:rounded-lg bg-${buttonColor} text-${textColor} ${customStyle}`}
+            className={`md:px-2 md:py-2 rounded-md md:rounded-sm ${customStyle}`}
             onClick={
                 () => {
                     if(value) onClick(value);

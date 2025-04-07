@@ -66,7 +66,7 @@ export const getAllTrades = async (): Promise<AxiosResponse> => {
     }
 };
 
-export const useGetAllTradesRQ = (onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetAllTradesRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: getAllTrades,
         queryKey: ["trades"],
@@ -77,7 +77,8 @@ export const useGetAllTradesRQ = (onSuccessFn: () => void, onErrorFn: () => void
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 };
 
@@ -93,7 +94,7 @@ export const getTradeDetail = async (id: number): Promise<AxiosResponse> => {
     }
 };
 
-export const useGetTradeDetailRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetTradeDetailRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: () => getTradeDetail(id),
         queryKey: ["tradeDetail", id],
@@ -104,7 +105,8 @@ export const useGetTradeDetailRQ = (id: number, onSuccessFn: () => void, onError
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 };
 
@@ -120,7 +122,7 @@ export const getUserOwnedTrades = async (): Promise<AxiosResponse> => {
     }
 };
 
-export const useGetUserOwnedTradesRQ = (onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetUserOwnedTradesRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: getUserOwnedTrades,
         queryKey: ["userOwnedTrades"],
@@ -131,6 +133,7 @@ export const useGetUserOwnedTradesRQ = (onSuccessFn: () => void, onErrorFn: () =
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 };

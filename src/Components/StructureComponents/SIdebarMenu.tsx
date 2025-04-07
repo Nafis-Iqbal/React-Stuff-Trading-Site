@@ -39,16 +39,16 @@ const SidebarMenu: React.FC<{isPopOutSidebar: boolean, onClose: () => void}> = (
         
         <ul className="flex flex-col space-y-1">
             <li>
-                <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Show Popular Listings</button>
+                <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Show Popular Listings</button>
             </li>
             <li>
-                <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Show Nearby Listings</button>
+                <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Show Nearby Listings</button>
             </li>
             <li>
-                <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Create New Listing</button>
+                <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Create New Listing</button>
             </li>
             <li>
-                <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Show Pending Trades</button>
+                <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Show Pending Trades</button>
             </li>
         </ul>
 

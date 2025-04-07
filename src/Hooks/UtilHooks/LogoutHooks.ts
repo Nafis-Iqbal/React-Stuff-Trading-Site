@@ -6,10 +6,11 @@ import { queryClient } from "../../Services/API/ApiInstance";
 const useLogout = () => {
     const dispatch = useAuthDispatch(); // ✅ Call inside another hook
     const navigate = useNavigate();
-    queryClient.invalidateQueries();
-    queryClient.clear();
 
     return () => {
+      queryClient.invalidateQueries();
+      queryClient.clear();
+
       dispatch(logout());
       navigate("/");
     };

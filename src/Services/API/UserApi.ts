@@ -34,7 +34,7 @@ export const loginUser = async (email: string, password: string): Promise<AxiosR
 
 export const getAuthenticatedUser = async (numbe: number): Promise<AxiosResponse> => {
     try{
-        const response = await api.get<ApiResponse<User>>("user");
+        const response = await api.get<ApiResponse<User>>("user/own_detail");
         
         return response;
     }
@@ -57,7 +57,7 @@ export const useGetAuthenticatedUserRQ = () => {
 
 export const fetchUsers = async (): Promise<AxiosResponse> => {
     try{
-        const response = await api.get<ApiResponse<User[]>>("user");
+        const response = await api.get<ApiResponse<User[]>>("user/index");
         return response;
     }
     catch(error)

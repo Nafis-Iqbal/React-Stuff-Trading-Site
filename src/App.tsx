@@ -15,6 +15,7 @@ import LoadingModal from './Components/Modals/LoadingContentModal';
 import NotificationPopUp from './Components/Modals/NotificationPopUpModal';
 import SidebarMenu from './Components/StructureComponents/SIdebarMenu';
 import OpenSidebarButton from './Components/StructureComponents/OpenSidebarButton';
+import ListingDetailModal from './Components/Modals/ListingDetailModal';
 
 function App() {
   const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true'; // Ensure it returns a boolean
@@ -32,6 +33,7 @@ function App() {
 
                 <LoadingModal/>
                 <NotificationPopUp/>
+                <ListingDetailModal/>
 
                 {isSidebarMenuOpen && (
                     <div className="fixed inset-0 bg-black opacity-50 z-40 backdrop-blur-sm pointer-events-auto" onClick={() => setIsSidebarMenuOpen(false)}></div>

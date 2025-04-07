@@ -14,7 +14,7 @@ export const getBids = async (): Promise<AxiosResponse> => {
     }
 }
 
-export const useGetBidsRQ = (bid_id: number | undefined, onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetBidsRQ = (bid_id: number | undefined, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: getBids,
         queryKey: bid_id ? ["bids", bid_id] : ["bids"],
@@ -25,7 +25,8 @@ export const useGetBidsRQ = (bid_id: number | undefined, onSuccessFn: () => void
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 }
 
@@ -83,7 +84,7 @@ export const useUpdateBidRQ = (onSuccessFn: (ApiResponse: any) => void, onErrorF
 
 export const deleteBid = async (bid_id: number): Promise<AxiosResponse> => {
     try {
-        const response = api.delete<ApiResponse<string>>(`bids/delete/${bid_id}`);
+        const response = api.delete<ApiResponse<string>>(`bids/delete?id=${bid_id}`);
 
         return response;
     }
@@ -117,7 +118,7 @@ export const getBidDetail = async (bid_id: number): Promise<AxiosResponse> => {
     }
 }
 
-export const useGetBidDetailRQ = (bid_id: number, onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetBidDetailRQ = (bid_id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: () => getBidDetail(bid_id),
         queryKey: ["bidDetail", bid_id],
@@ -128,7 +129,8 @@ export const useGetBidDetailRQ = (bid_id: number, onSuccessFn: () => void, onErr
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 }
 
@@ -144,7 +146,7 @@ export const getUserOwnedBids = async (): Promise<AxiosResponse> => {
     }
 }
 
-export const useGetUserOwnedBidsRQ = (onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetUserOwnedBidsRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryFn: getUserOwnedBids,
         queryKey: ["userOwnedBids"],
@@ -155,6 +157,7 @@ export const useGetUserOwnedBidsRQ = (onSuccessFn: () => void, onErrorFn: () => 
         },
         onError: () => {
             onErrorFn();
-        }
+        },
+        enabled
     });
 }

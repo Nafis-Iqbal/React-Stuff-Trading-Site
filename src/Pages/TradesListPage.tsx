@@ -7,7 +7,7 @@ const TradesListPage:React.FC = () => {
     }
     
     return (
-        <div className="flex flex-1 flex-col md:flex-row bg-pink-100 text-white min-h-screen">
+        <div className="flex flex-1 flex-col md:flex-row bg-pink-200 md:bg-pink-100 text-white min-h-screen">
             <div className="md:hidden min-h-[30px] bg-pink-200"></div>
 
             <main className="flex flex-col w-[100%] md:w-[60%] h-full bg-pink-200">
