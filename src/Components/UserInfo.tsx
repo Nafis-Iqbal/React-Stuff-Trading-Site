@@ -1,27 +1,41 @@
 import {useEffect, useState} from 'react';
-import { queryClient } from '../Services/API/ApiInstance';
-import { useGetAuthenticatedUserRQ } from '../Services/API/UserApi';
-import ProfilePicture from './StructureComponents/ProfilePicture';
-import makeFirstLetterUppercase from '../Utilities/Utilities';
-import EditUserModal from '../Components/Modals/EditUserInfoModal';
-import { checkIfSubstring } from '../Utilities/Utilities';
+import { useDispatch } from 'react-redux';
 
-const UserInfo = ({profilePicture, customStyle} : {profilePicture: string, customStyle?: string}) => {
+import { queryClient } from '../Services/API/ApiInstance';
+import { UserApi } from '../Services/API';
+import { setNotification, setLoading } from '../GlobalStateContext/CommonPopUpSlice';
+import makeFirstLetterUppercase, { checkIfSubstring } from '../Utilities/Utilities';
+
+import ProfilePicture from './StructureComponents/ProfilePicture';
+import EditUserModal from '../Components/Modals/EditUserInfoModal';
+
+const UserInfo = ({userId, profilePicture, customStyle} : {userId: number, profilePicture: string, customStyle?: string}) => {
   const [isEditUserOpen, setIsEditUserOpen] = useState(false);
   const [canEditInfo, setCanEditInfo] = useState(true); 
 
-  const {data: userData} = useGetAuthenticatedUserRQ();
+  const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
+
+  const {data: userData} = UserApi.useGetUserDetailRQ(
+    userId,
+    () => {
+
+    },
+    () => {
+
+    },
+    (userId > 0)
+  );
 
   const openEditUserForm = () => {
     setIsEditUserOpen(true);
   }
 
   const onEditUserSubmit = () => {
-    //setLoadingContentOpen(true);
+    showLoadingContent(true);
   }
 
   const onEditUserSuccess = (formData: User) => {
-    //setLoadingContentOpen(false);
+    showLoadingContent(false);
 
     openNotificationPopUpMessage("User info updated successfully!");
 
@@ -29,26 +43,34 @@ const UserInfo = ({profilePicture, customStyle} : {profilePicture: string, custo
   }
 
   const onEditUserFailure = () => {
-    //setLoadingContentOpen(false);
+    showLoadingContent(false);
     openNotificationPopUpMessage("Error updating User info!");
   }
 
-  const openNotificationPopUpMessage = (popUpMessage: string) => {
-    //setNotificationPopupOpen(true);
-    //setNotificationMessage(popUpMessage);
+  const dispatch = useDispatch();
+
+  const showLoadingContent = (setStatus: boolean) => {
+      dispatch(setLoading(setStatus));
+  }
+
+  const openNotificationPopUpMessage = (notificationMessage: string) => {
+      dispatch(setNotification({
+          isVisible: true,
+          message: notificationMessage,
+          type: 'info'
+      }))
   }
 
   useEffect(() => {
-    console.log(userData?.data.data);
-    if(checkIfSubstring(userData?.data.data.user_name ?? '', "Guest")){
+    if(checkIfSubstring(userData?.data.data.user_name ?? '', "Guest") || ownUserData?.data.data.id !== userId){
       setCanEditInfo(false);
     }
-  },[userData]);
+  },[userData, ownUserData, userId]);
 
   return (
     <div className={`rounded-lg space-y-3 shadow-sm ${customStyle}`}>
       <ProfilePicture src={profilePicture} customStyle="mb-2"/>
-      <h3 className="mb-4 text-2xl font-bold text-pink-900">{userData?.data.data.user_name ?? "Nafis"}</h3>
+      <h3 className="mb-4 text-2xl font-bold text-pink-900">{userData?.data.data.user_name ?? "Fix user name"}</h3>
 
       <EditUserModal
         isOpen={isEditUserOpen}

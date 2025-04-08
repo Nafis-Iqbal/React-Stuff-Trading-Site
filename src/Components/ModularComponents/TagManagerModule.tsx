@@ -13,59 +13,49 @@ const TagManagerModule:React.FC<{customStyle?: string}> = ({customStyle}) => {
     const [tagsFetchMessage, setTagsFetchMessage] = useState<string>("");
     const [isCreateTagOpen, setIsCreateTagOpen] = useState(false);
 
-    const dispatch = useDispatch();
-
     const {data: tagsDataAll, isLoading: tagsDataLoading} = TagApi.useGetAllTagsRQ(
         () => {
-        setTagsData(tagsDataAll?.data.data);
+            setTagsData(tagsDataAll?.data.data);
 
-        if(tagsDataAll?.data.data.length < 1){
-            setTagsFetchMessage("No projects to show.");
-        }
+            if(tagsDataAll?.data.data.length < 1){
+                setTagsFetchMessage("No projects to show.");
+            }
         },
         () => {
-        setTagsFetchMessage("Failed to Load tags.");
+            setTagsFetchMessage("Failed to Load tags.");
         },
         true
     );
 
     const {mutate: updateTagMutate} = TagApi.useUpdateTagRQ(
         () => {
-        showLoadingContent(false);
-        openNotificationPopUpMessage("Tag updated successfully.");
+            showLoadingContent(false);
+            openNotificationPopUpMessage("Tag updated successfully.");
 
-        queryClient.invalidateQueries(["tags"]);
+            queryClient.invalidateQueries(["tags"]);
         },
         () => {
-        showLoadingContent(false);
-        openNotificationPopUpMessage("Failed to update tag. Try again");
+            showLoadingContent(false);
+            openNotificationPopUpMessage("Failed to update tag. Try again");
         }
     );
 
     const {mutate: deleteTagMutate} = TagApi.useDeleteTagRQ(
         () => {
-        showLoadingContent(false);
-        openNotificationPopUpMessage("Tag deleted successfully.");
+            showLoadingContent(false);
+            openNotificationPopUpMessage("Tag deleted successfully.");
 
-        queryClient.invalidateQueries({ queryKey: ["tags"] });
+            queryClient.invalidateQueries({ queryKey: ["tags"] });
         },
         () => {
-        showLoadingContent(false);
-        openNotificationPopUpMessage("Failed to delete tag. Try again");
+            showLoadingContent(false);
+            openNotificationPopUpMessage("Failed to delete tag. Try again");
         }
     );
 
-    const showLoadingContent = (setStatus: boolean) => {
-        dispatch(setLoading(setStatus));
-    }
-
-    const openNotificationPopUpMessage = (notificationMessage: string) => {
-        dispatch(setNotification({
-            isVisible: true,
-            message: notificationMessage,
-            type: 'info'
-        }))
-    }
+    useEffect(() => {
+        setTagsData(tagsDataAll?.data.data);
+    }, [tagsDataAll])
 
     const openCreateTagForm = () => {
         setIsCreateTagOpen(true);
@@ -80,21 +70,34 @@ const TagManagerModule:React.FC<{customStyle?: string}> = ({customStyle}) => {
 
         openNotificationPopUpMessage("Tag created successfully!");
 
-        if(tagsData)
-        {
-        setTagsData((prevTags) => [
-            ...prevTags,
-            {
-            id: formData.id, // Generate a new task ID
-            title: formData.title,
-            }
-        ]);
+        if(tagsData){
+            setTagsData((prevTags) => [
+                ...prevTags,
+                {
+                id: formData.id, // Generate a new task ID
+                title: formData.title,
+                }
+            ]);
         }
     }
 
     const onCreateTagFailure = () => {
         showLoadingContent(false);
         openNotificationPopUpMessage("Error creating task tag!");
+    }
+
+    const dispatch = useDispatch();
+
+    const showLoadingContent = (setStatus: boolean) => {
+        dispatch(setLoading(setStatus));
+    }
+
+    const openNotificationPopUpMessage = (notificationMessage: string) => {
+        dispatch(setNotification({
+            isVisible: true,
+            message: notificationMessage,
+            type: 'info'
+        }))
     }
 
     return (

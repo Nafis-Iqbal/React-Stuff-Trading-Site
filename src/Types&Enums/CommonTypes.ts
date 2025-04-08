@@ -24,17 +24,21 @@ declare global{
         exchange_items: string;
         price: number;
         status: listingStatus;
-        bidsCount?: number;
         listingPicture?: string;
+        bidsCount?: number;
+        highestBidPrice?: number;
+        topBid?: Bid;
     }
 
     interface Bid{
         id?: number;
         listing_id: number;
+        listing_name?:string;
         description: string;
         amount: number;
         bidder_id: number;
         bidder_name?: string;
+        bidder_picture?: string;
     }
 
     interface Tag{

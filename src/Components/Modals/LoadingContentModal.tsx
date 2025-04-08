@@ -8,7 +8,7 @@ const LoadingModal: React.FC = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-md z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-md z-55">
       {/* Prevents interaction with background elements */}
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}

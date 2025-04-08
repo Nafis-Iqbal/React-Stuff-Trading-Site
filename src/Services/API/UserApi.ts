@@ -67,10 +67,10 @@ export const fetchUsers = async (): Promise<AxiosResponse> => {
     }
 };
 
-export const fetchUser = async (id: number): Promise<AxiosResponse> => {
+export const getUserDetail = async (id: number): Promise<AxiosResponse> => {
     try{
         const params = new URLSearchParams({id: id.toString()})
-        const response = await api.get<ApiResponse<User>>(`user?${params.toString()}`);
+        const response = await api.get<ApiResponse<User>>(`user/detail/?${params.toString()}`);
         
         return response;
     }
@@ -81,10 +81,10 @@ export const fetchUser = async (id: number): Promise<AxiosResponse> => {
     }
 }
 
-export const useFetchUserRQ = (user_id: number, onSuccessFn: () => void, onErrorFn: () => void) => {
+export const useGetUserDetailRQ = (user_id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
         queryKey: ["user", user_id],
-        queryFn: () => fetchUser(user_id),
+        queryFn: () => getUserDetail(user_id),
         onSuccess: () => {
             onSuccessFn();
         },
@@ -93,7 +93,7 @@ export const useFetchUserRQ = (user_id: number, onSuccessFn: () => void, onError
         },
         cacheTime: 180 * 1000,
         staleTime: 180 * 1000,
-        enabled: true
+        enabled
     });
 }
 

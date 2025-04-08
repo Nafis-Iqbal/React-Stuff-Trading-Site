@@ -9,7 +9,7 @@ interface CommonPopupState{
         isVisible: boolean;
     };
     listingDetailView: {
-        listingDetail: Listing;
+        listingId: number;
         isVisible: boolean;
     }
 }
@@ -22,16 +22,7 @@ const initialState: CommonPopupState = {
         isVisible: false,
     },
     listingDetailView: {
-        listingDetail: {
-            id: 0,
-            user_id: 0,
-            title: '',
-            description: '',
-            location: '',
-            exchange_items: '',
-            price: 0,
-            status: listingStatus.available
-        },
+        listingId: 1,
         isVisible: false,
     }
 }
@@ -56,7 +47,7 @@ const commonPopUpSlice = createSlice({
         setListingDetailView: (
             state,
             action: PayloadAction<{
-                listingDetail: Listing;
+                listingId: number;
                 isVisible: boolean;
             }>
         ) => {

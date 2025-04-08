@@ -82,9 +82,9 @@ const getListingDetail = async (id: number): Promise<AxiosResponse> => {
     }
 };
 
-export const useGetListingDetailRQ = (id: number | undefined, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
+export const useGetListingDetailRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
-        queryKey: id ? ['listingDetail', id] : ['listingDetail'],
+        queryKey: ['listing_detail', id],
         queryFn: () => getListingDetail(id as number),
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
@@ -157,7 +157,7 @@ const getAllListings = async (): Promise<AxiosResponse> => {
 
 export const useGetAllListingsRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
-        queryKey: ['allListings'],
+        queryKey: ['listings'],
         queryFn: getAllListings,
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
@@ -184,7 +184,7 @@ const getAllListingViews = async (): Promise<AxiosResponse> => {
 
 export const useGetAllListingViewsRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
-        queryKey: ['allListingViews'],
+        queryKey: ['listing_views'],
         queryFn: getAllListingViews,
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
@@ -202,7 +202,7 @@ export const useGetAllListingViewsRQ = (onSuccessFn: () => void, onErrorFn: () =
 const getUserListings = async (userId: number): Promise<AxiosResponse> => {
     try {
         const response = await api.get<ApiResponse<Listing[]>>(`listings/user_index?user_id=${userId}`);
-        console.log("u " + userId);
+      
         return response;
     } catch (error) {
         console.log('Error fetching user listings');
@@ -212,7 +212,7 @@ const getUserListings = async (userId: number): Promise<AxiosResponse> => {
 
 export const useGetUserListingsRQ = (userId: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
-        queryKey: ['userListings', userId],
+        queryKey: ['listings', userId],
         queryFn: () => getUserListings(userId),
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
@@ -239,7 +239,7 @@ const getUserOwnedListings = async (userId: number): Promise<AxiosResponse> => {
 
 export const useGetUserOwnedListingsRQ = (userId: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
-        queryKey: ['userOwnedListings', userId],
+        queryKey: ['listings', userId],
         queryFn: () => getUserOwnedListings(userId),
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
@@ -266,7 +266,7 @@ const getListingTags = async (id: number): Promise<AxiosResponse> => {
 
 export const useGetListingTagsRQ = (id: number | undefined, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
-        queryKey: id ? ['listingTags', id] : ['listingTags'],
+        queryKey: id ? ['listing_tags', id] : ['listing_tags'],
         queryFn: () => getListingTags(id as number),
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
@@ -293,7 +293,7 @@ const getListingBids = async (id: number): Promise<AxiosResponse> => {
 
 export const useGetListingBidsRQ = (id: number | undefined, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
-        queryKey: id ? ['listingBids', id] : ['listingBids'],
+        queryKey: id ? ['listing_bids', id] : ['listing_bids'],
         queryFn: () => getListingBids(id as number),
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,

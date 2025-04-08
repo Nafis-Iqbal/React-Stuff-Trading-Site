@@ -7,31 +7,34 @@ import { useNavigate } from "react-router-dom";
 import { setListingDetailView } from "../../GlobalStateContext/CommonPopUpSlice";
 import BasicButton from "./BasicButton";
 import LoadingSpinnerBlock from "../LoadingSpinnerBlock";
+import store from "../../GlobalStateContext/GlobalStateStore";
 
 interface ListingViewProps{
+    listingId: number;
     listingTitle: string;
     description: string;
     listingPhoto: string;
     bidsCount: number;
     listingLocation: string;
+    bestBidderId: number;
     bestBidUserName?: string;
     bestBidUserPhoto?: string;
     bestBidDescription?: string;
     bestBidPrice?: number;
-    listingData: Listing;
 }
 
 const ListingViewBlock: React.FC<ListingViewProps> = ({
+    listingId,
     listingTitle,
     description,
     listingPhoto,
     bidsCount,
     listingLocation,
+    bestBidderId,
     bestBidUserName,
     bestBidUserPhoto,
     bestBidDescription,
-    bestBidPrice,
-    listingData
+    bestBidPrice
 }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -39,7 +42,7 @@ const ListingViewBlock: React.FC<ListingViewProps> = ({
     const openListingDetail = () => {
         dispatch(setListingDetailView({
             isVisible: true,
-            listingDetail: listingData
+            listingId: listingId
         }))
     }
 
@@ -56,7 +59,7 @@ const ListingViewBlock: React.FC<ListingViewProps> = ({
                     <p className="text-emerald-600 text-lg font-semibold">{listingLocation}</p>
                     
                     {(bidsCount > 0) && (
-                        <div className="flex justify-between w-full p-2 bg-pink-300 rounded-sm">
+                        <div className="flex justify-between w-full p-2 space-x-2 bg-pink-300 rounded-sm">
                             <div className="flex items-center w-[65%] space-x-3">
                                 <p className="text-black w-[75%] text-ellipsis">{bestBidDescription}</p>
                                 <p className="text-red-600 text-lg font-bold w-[25%]">{bestBidPrice}</p>
@@ -64,7 +67,7 @@ const ListingViewBlock: React.FC<ListingViewProps> = ({
                             
                             <div className="flex justify-between items-center w-[35%]">
                                 <img src={bestBidUserPhoto} alt="bidder" className="w-[45%] rounded-full"></img>
-                                <button onClick={() => navigate("/profile")} className="w-[45%] p-1 text-white overflow-hidden text-ellipsis bg-pink-500 rounded-sm">{bestBidUserName}</button>
+                                <button onClick={() => navigate(`/profile/${bestBidderId ?? 0}`)} className="w-[45%] p-1 text-white overflow-hidden text-xs md:text-sm text-ellipsis bg-pink-500 rounded-sm">{bestBidUserName}</button>
                             </div>
                         </div>
                     )}

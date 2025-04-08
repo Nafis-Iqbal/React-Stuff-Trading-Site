@@ -6,7 +6,7 @@ import { ListingApi } from "../../Services/API";
 import { queryClient } from "../../Services/API/ApiInstance";
 
 interface CreateListingModalProps{
-    userData: User;
+    user_id: number;
     isOpen: boolean;
     onClose: () => void;
     onSubmit: () => void;
@@ -14,11 +14,11 @@ interface CreateListingModalProps{
     onFailure: () => void;
 }
 
-const CreateListingModal: React.FC<CreateListingModalProps> = ({userData, isOpen, onClose, onSubmit, onSuccess, onFailure}) => {
+const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen, onClose, onSubmit, onSuccess, onFailure}) => {
     
     const[formData, setFormData] = useState<Listing>({
         id: 0,
-        user_id: (userData.id ?? 0),
+        user_id: (user_id ?? 0),
         title: '',
         description: '',
         location: '',
@@ -36,7 +36,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({userData, isOpen
 
                 setFormData({
                     id: 0,
-                    user_id: (userData.id ?? 0),
+                    user_id: (user_id ?? 0),
                     title: '',
                     description: '',
                     location: '',
@@ -86,7 +86,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({userData, isOpen
     const handleClose = () => {
         setFormData({
             id: 0,
-            user_id: (userData.id ?? 0),
+            user_id: (user_id ?? 0),
             title: '',
             description: '',
             location: '',

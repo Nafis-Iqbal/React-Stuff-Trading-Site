@@ -9,6 +9,7 @@ import { setListingDetailViewVisibility } from "../../GlobalStateContext/CommonP
 interface BidViewProps{
     description: string;
     amount: number;
+    bidder_id: number;
     bidder_name: string;
     bidder_picture: string;
 }
@@ -16,6 +17,7 @@ interface BidViewProps{
 const BidViewBlock: React.FC<BidViewProps> = ({
     description,
     amount,
+    bidder_id,
     bidder_name,
     bidder_picture
 }) => {
@@ -32,19 +34,14 @@ const BidViewBlock: React.FC<BidViewProps> = ({
             
             <div className="flex justify-between items-center w-[35%] md:w-[30%] mr-1">
                 <img className="my-1 mr-1 size-[50px] rounded-full"
-                    src={bidder_picture} 
+                    src={bidder_picture ?? "/images/profile_picture.jpg"} 
                     alt="userimg"
-                    onError={(e) => {
-                        const target = e.currentTarget;
-                        target.onerror = null;
-                        target.src = "images/profile_picture.jpg";
-                    }}
                 >
                 </img>
 
                 <button className="p-1 my-1 mr-1 w-[50%] text-pink-700 bg-pink-300 hover:bg-pink-400 rounded-sm" 
                     onClick={() => {
-                        navigate("/profile");
+                        navigate(`/profile/${bidder_id ?? 0}`);
                         dispatch(setListingDetailViewVisibility(false));
                     }}
                 >

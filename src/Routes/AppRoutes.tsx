@@ -28,23 +28,23 @@ const appRoutes: RouteObject[] = [
                 element: <DashboardPage/>,
             },
             {
-                path: "/listings",
+                path: "/listings/:userId",
                 element: <ListingsListPage/>
             },
             {
-                path: "/bids",
+                path: "/bids/:userId",
                 element: <BidsListPage/>
             },
             {
-                path: "/trades",
+                path: "/trades/:userId",
                 element: <TradesListPage/>,
             },
             {
-                path: "/transactions",
+                path: "/transactions/:userId",
                 element: <TransactionsListPage/>,
             },
             {
-                path: "/profile",
+                path: "/profile/:userId",
                 element: <ProfilePage/>
             },
             {

@@ -1,9 +1,35 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
+import { useDispatch } from "react-redux";
+
+import { BidApi } from "../Services/API";
+import { setListingDetailView } from "../GlobalStateContext/CommonPopUpSlice";
+
 import BidInfoBlock from "../Components/ElementComponents/BidInfoBlock";
 
 const BidsListPage: React.FC = () => {
-    const openListingDetailModal = () => {
+    const [bidList, setBidList] = useState<Bid[]>();
 
+    const {data: bidListData} = BidApi.useGetUserOwnedBidViewsRQ(
+        () => {
+
+        },
+        () => {
+
+        },
+        true
+    );
+
+    useEffect(() => {
+        setBidList(bidListData?.data.data);
+    }, [bidListData]);
+
+    const dispatch = useDispatch();
+
+    const showListingDetail = (listingId: number) => {
+        dispatch(setListingDetailView({
+            isVisible: true,
+            listingId: listingId
+        }))
     }
 
     return (
@@ -16,12 +42,15 @@ const BidsListPage: React.FC = () => {
                 </div>
 
                 <ul className="p-3 mx-2 mt-6 mb-2 space-y-3 bg-pink-100 rounded-lg">
-                    <li>
-                        <BidInfoBlock listingName="Listing 1" description="bid description" bidPrice={40} onViewListingClick={() => openListingDetailModal()}/>
-                    </li>
-                    <li>
-                        <BidInfoBlock listingName="Listing 2" description="bid description" bidPrice={40} onViewListingClick={() => openListingDetailModal()}/>
-                    </li>
+                    {bidList && bidList.length > 0 && (
+                        bidList.map((bid) => {
+                            return (
+                                <li>
+                                    <BidInfoBlock listingName={bid.listing_name ?? "Fix listing name"} description={bid.description} bidPrice={bid.amount} onViewListingClick={() => showListingDetail(bid.listing_id)}/>
+                                </li>
+                            );
+                        })
+                    )}
                 </ul>
             </main>
         </div>

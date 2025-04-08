@@ -1,10 +1,15 @@
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { UserApi } from '../../Services/API';
 import { useLogout } from '../../Hooks/UtilHooks';
 
 const SidebarMenu: React.FC<{isPopOutSidebar: boolean, onClose: () => void}> = ({isPopOutSidebar, onClose} : {isPopOutSidebar: boolean, onClose: () => void}) => {
     const navigate = useNavigate();
     const logoutG = useLogout();
+
+    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
+
 
     const smallScreenStyle = "fixed top-0 left-0 md:hidden w-[60%] min-h-screen bg-pink-300 rounded-sm border-r-4 border-pink-600 z-50";
     const bigScreenStyle = "hidden md:block md:w-[20%] bg-pink-300 rounded-sm border-r-4 border-pink-600";
@@ -22,16 +27,16 @@ const SidebarMenu: React.FC<{isPopOutSidebar: boolean, onClose: () => void}> = (
 
         <ul className="flex flex-col space-y-1">
             <li>
-                <button onClick={() => navigate("/dashboard")} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Dashboard</button>
+                <button onClick={() => {navigate("/dashboard"); onClose();}} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Dashboard</button>
             </li>
             <li>
-                <button onClick={() => navigate("/listings")} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Listings</button>
+                <button onClick={() => {navigate(`/listings/${ownUserData?.data.data.id ?? 0}`); onClose();}} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Listings</button>
             </li>
             <li>
-                <button onClick={() => navigate("/bids")} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Bids</button>
+                <button onClick={() => {navigate(`/bids/${ownUserData?.data.data.id ?? 0}`); onClose();}} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Bids</button>
             </li>
             <li>
-                <button onClick={() => navigate("/trades")} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Trades</button>
+                <button onClick={() => {navigate(`/trades/${ownUserData?.data.data.id ?? 0}`); onClose();}} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Trades</button>
             </li>
         </ul>
 
@@ -56,7 +61,7 @@ const SidebarMenu: React.FC<{isPopOutSidebar: boolean, onClose: () => void}> = (
         
         <ul className="flex flex-col space-y-1">
             <li>
-                <button onClick={() => navigate("/profile")} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Profile</button>
+                <button onClick={() => {navigate(`/profile/${ownUserData?.data.data.id ?? 0}`); onClose();}} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Profile</button>
             </li>
             <li>
                 <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-pink-100" disabled>Settings</button>

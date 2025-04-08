@@ -6,18 +6,18 @@ import ListingViewBlock from "../Components/ElementComponents/ListingViewBlock";
 
 const DashboardPage:React.FC = () => {
     const images = [
-        'images/joystick.jpg',
-        'images/keyboard.jpg',
-        'images/mouse.jpg',
-        'images/sofa.jpg',
+        '/images/joystick.jpg',
+        '/images/keyboard.jpg',
+        '/images/mouse.jpg',
+        '/images/sofa.jpg',
     ];
 
     const [currentBannerImageIndex, setCurrentBannerImageIndex] = useState(0);
     const [fade, setFade] = useState(false);
 
-    const [listingsList, setListingsList] = useState<Listing[]>([]);
+    const [listingsViewList, setListingsViewList] = useState<Listing[]>([]);
 
-    const {data: listingsListData} = ListingApi.useGetAllListingViewsRQ(
+    const {data: listingsViewListData} = ListingApi.useGetAllListingViewsRQ(
         () => {
 
         },
@@ -28,8 +28,8 @@ const DashboardPage:React.FC = () => {
     );
 
     useEffect( () => {
-        setListingsList(listingsListData?.data.data);
-    }, [listingsListData]);
+        setListingsViewList(listingsViewListData?.data.data);
+    }, [listingsViewListData]);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -42,10 +42,6 @@ const DashboardPage:React.FC = () => {
       
           return () => clearInterval(intervalId);
     }, [images]);
-
-    useEffect(() => {
-        
-    }, []);
 
     return (
         <div className="flex flex-col md:flex-row flex-1 w-[100%] md:w-[80%]">
@@ -69,21 +65,22 @@ const DashboardPage:React.FC = () => {
                 <div className="bg-pink-200 flex flex-1">
                     <div className="flex-1 max-h-[750px] overflow-y-auto p-3 m-3 box-border rounded-md bg-pink-300">
                         <ul className="space-y-4">
-                            {listingsList && listingsList.length > 0 && (listingsList.map(
+                            {listingsViewList && listingsViewList.length > 0 && (listingsViewList.map(
                                 (listing) => {
                                     return (
                                         <li>
                                             <ListingViewBlock key={listing.id}
+                                                listingId={listing.id}
                                                 listingTitle = {listing.title}
                                                 description = {listing.description}
                                                 listingLocation = {listing.location}
-                                                listingPhoto = {listing?.listingPicture ?? "images/keyboard.jpg"}
-                                                bidsCount = {1}
-                                                bestBidUserName = "User 1"
-                                                bestBidUserPhoto = "User 1.jpg"
-                                                bestBidDescription = "Best bid!"
-                                                bestBidPrice = {70}
-                                                listingData={listing}
+                                                listingPhoto = {listing?.listingPicture ?? "/images/keyboard.jpg"}
+                                                bidsCount = {listing?.bidsCount ?? 0}
+                                                bestBidderId={listing?.topBid?.bidder_id ?? 0}
+                                                bestBidUserName = {listing?.topBid?.bidder_name ?? "Demo User"}
+                                                bestBidUserPhoto = {listing?.topBid?.bidder_picture ?? "/images/profile_picture.jpg"}
+                                                bestBidDescription = {listing?.topBid?.description ?? "Demo bid"}
+                                                bestBidPrice = {listing?.highestBidPrice ?? 0}
                                             />
                                         </li>
                                     );

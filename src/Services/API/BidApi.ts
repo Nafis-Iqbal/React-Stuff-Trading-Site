@@ -2,9 +2,9 @@ import api from './ApiInstance';
 import { AxiosResponse } from 'axios';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-export const getBids = async (): Promise<AxiosResponse> => {
+export const getAllBids = async (): Promise<AxiosResponse> => {
     try {
-        const response = await api.get<ApiResponse<Bid[]>>("bids");
+        const response = await api.get<ApiResponse<Bid[]>>("bids/index");
 
         return response;
     }
@@ -16,7 +16,7 @@ export const getBids = async (): Promise<AxiosResponse> => {
 
 export const useGetBidsRQ = (bid_id: number | undefined, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
     return useQuery({
-        queryFn: getBids,
+        queryFn: getAllBids,
         queryKey: bid_id ? ["bids", bid_id] : ["bids"],
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
@@ -108,7 +108,7 @@ export const useDeleteBidRQ = (onSuccessFn: () => void, onErrorFn: () => void) =
 
 export const getBidDetail = async (bid_id: number): Promise<AxiosResponse> => {
     try {
-        const response = api.get<ApiResponse<Bid>>(`bids/detail/${bid_id}`);
+        const response = api.get<ApiResponse<Bid>>(`bids/detail?id=${bid_id}`);
 
         return response;
     }
@@ -136,7 +136,7 @@ export const useGetBidDetailRQ = (bid_id: number, onSuccessFn: () => void, onErr
 
 export const getUserOwnedBids = async (): Promise<AxiosResponse> => {
     try {
-        const response = api.get<ApiResponse<Bid[]>>("bids/owned");
+        const response = api.get<ApiResponse<Bid[]>>("bids/user_index");
 
         return response;
     }
@@ -150,6 +150,34 @@ export const useGetUserOwnedBidsRQ = (onSuccessFn: () => void, onErrorFn: () => 
     return useQuery({
         queryFn: getUserOwnedBids,
         queryKey: ["userOwnedBids"],
+        staleTime: 30 * 1000,
+        cacheTime: 30 * 1000,
+        onSuccess: () => {
+            onSuccessFn();
+        },
+        onError: () => {
+            onErrorFn();
+        },
+        enabled
+    });
+}
+
+export const getUserOwnedBidViews = async (): Promise<AxiosResponse> => {
+    try {
+        const response = api.get<ApiResponse<Bid[]>>("bids/user_index_views");
+
+        return response;
+    }
+    catch (error) {
+        console.log("Error fetching user owned bid views");
+        throw error;
+    }
+}
+
+export const useGetUserOwnedBidViewsRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
+    return useQuery({
+        queryFn: getUserOwnedBidViews,
+        queryKey: ["userOwnedBidViews"],
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
         onSuccess: () => {

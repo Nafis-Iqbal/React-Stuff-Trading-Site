@@ -1,32 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import { UserApi, ListingApi } from "../Services/API";
 import { setNotification, setLoading, setListingDetailView } from "../GlobalStateContext/CommonPopUpSlice";
 
 import ListingInfoBlock from "../Components/ElementComponents/ListingInfoBlock";
-import ListingDetailModal from "../Components/Modals/ListingDetailModal";
 import CreateListingModal from "../Components/Modals/CreateListingModal";
 
 const ListingsListPage:React.FC = () => {
-    //const [isListingDetailOpen, setIsListingDetailOpen] = useState(false);
     const [isCreateListingOpen, setIsCreateListingOpen] = useState(false);
-
     const [listingsList, setListingsList] = useState<Listing[]>([]);
-    const [listingDetailData, setListingDetailData] = useState<Listing>();
 
-    const {data: userData} = UserApi.useGetAuthenticatedUserRQ();
+    const { userId } = useParams();
+    const parsedUserId = Number(userId);
+
+    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
 
     const {data: listingsListData} = ListingApi.useGetUserListingsRQ(
-        userData?.data.data.id,
+        parsedUserId,
         () => {
-
+            
         },
         () => {
 
         },
-        !!userData?.data.data.id
+        (parsedUserId > 0)
     );
 
     useEffect(() => {
@@ -60,10 +59,10 @@ const ListingsListPage:React.FC = () => {
 
     const dispatch = useDispatch();
 
-    const showListingDetail = (listingData: Listing) => {
+    const showListingDetail = (listingId: number) => {
         dispatch(setListingDetailView({
             isVisible: true,
-            listingDetail: listingData
+            listingId: listingId
         }))
     }
 
@@ -83,9 +82,9 @@ const ListingsListPage:React.FC = () => {
         <div className="flex flex-1 flex-col md:flex-row bg-pink-200 md:bg-pink-100 text-white min-h-screen">
             <div className="md:hidden min-h-[30px] bg-pink-200"></div>
 
-            {userData?.data.data && (<CreateListingModal 
+            {ownUserData?.data.data && (ownUserData.data.data.id === parsedUserId) && (<CreateListingModal 
                 isOpen={isCreateListingOpen} 
-                userData={userData?.data.data}
+                user_id={parsedUserId}
                 onClose={() => setIsCreateListingOpen(false)}
                 onSubmit={onCreateListingSubmit}
                 onSuccess={onCreateListingSuccess}
@@ -96,7 +95,7 @@ const ListingsListPage:React.FC = () => {
                 <div className="flex justify-between items-center">
                     <h1 className="p-3 md:p-4 ml-2 mt-2 bg-pink-300 text-2xl md:text-3xl text-white font-semibold rounded-sm">Listings</h1>
 
-                    <div className="p-2 md:p-3 mr-2 bg-white text-lg md:text-xl text-emerald-700 border-4 border-emerald-500 font-semibold rounded-md">Own Listings</div>
+                    {ownUserData?.data.data && (ownUserData.data.data.id === parsedUserId) && (<div className="p-2 md:p-3 mr-2 bg-white text-lg md:text-xl text-emerald-700 border-4 border-emerald-500 font-semibold rounded-md">Own Listings</div>)}
                 </div>
 
                 {/* {isListingDetailOpen && listingDetailData && <ListingDetailModal listingData={listingDetailData} onClose={() => setIsListingDetailOpen(false)}/>} */}
@@ -110,9 +109,9 @@ const ListingsListPage:React.FC = () => {
                         (listing) => {
                             return (
                                 <li>
-                                    <ListingInfoBlock key={listing.id} name={listing.title} bidsCount={listing.bidsCount ?? 0} onClick={
+                                    <ListingInfoBlock key={listing.id} name={listing.title} bidsCount={listing.bidsCount ?? 0} highestBidPrice={listing.highestBidPrice ?? -1} onClick={
                                         () => {
-                                            showListingDetail(listing);
+                                            showListingDetail(listing.id);
                                         }
                                     }/>
                                 </li>

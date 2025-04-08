@@ -60,6 +60,7 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
 
     useEffect(() => {
         setBidList(bidListData?.data.data);
+        console.log(bidList);
     }, [bidListData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -131,7 +132,13 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
                             (bid) => {
                                 return (
                                     <li>
-                                        <BidViewBlock description={bid.description} amount={bid.amount} bidder_name={bid?.bidder_name ?? "User 1"} bidder_picture="new.jpg"/>
+                                        <BidViewBlock 
+                                            description={bid.description} 
+                                            amount={bid.amount} 
+                                            bidder_id={bid.bidder_id}
+                                            bidder_name={bid?.bidder_name ?? "User 1"} 
+                                            bidder_picture="/images/profile_picture.jpg"
+                                        />
                                     </li>
                                 );
                             }
