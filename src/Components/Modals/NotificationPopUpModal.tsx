@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import ReactDOM from "react-dom";
 
 import { motion } from "framer-motion";
 import { setNotification } from "../../GlobalStateContext/CommonPopUpSlice";
@@ -18,7 +19,7 @@ const NotificationPopUp: React.FC = () => {
 
   if (!notificationState.isVisible) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div
       className="fixed z-60 inset-0 flex items-center justify-center bg-black bg-opacity-50"
       onClick={onClose} // Close modal when clicking outside
@@ -41,7 +42,7 @@ const NotificationPopUp: React.FC = () => {
         </button>
       </motion.div>
     </div>
-  );
+  , document.body);
 };
 
 export default NotificationPopUp;

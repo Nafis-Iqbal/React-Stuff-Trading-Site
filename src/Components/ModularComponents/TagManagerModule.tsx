@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { queryClient } from '../../Services/API/ApiInstance';
 import { TagApi } from '../../Services/API';
-import { useDispatch } from 'react-redux';
-import { setNotification, setLoading } from "../../GlobalStateContext/CommonPopUpSlice";
+import { useGlobalUI } from '../../Hooks/StateHooks/GlobalStateHooks';
 
 import { TableDataBlock } from '../ElementComponents/TableDataBlock';
 import CreateTagModal from '../Modals/CreateTagModal';
@@ -12,13 +11,12 @@ const TagManagerModule:React.FC<{customStyle?: string}> = ({customStyle}) => {
     const [tagsData, setTagsData] = useState<Tag[]>([]);
     const [tagsFetchMessage, setTagsFetchMessage] = useState<string>("");
     const [isCreateTagOpen, setIsCreateTagOpen] = useState(false);
+    const {showLoadingContent, openNotificationPopUpMessage} = useGlobalUI();
 
     const {data: tagsDataAll, isLoading: tagsDataLoading} = TagApi.useGetAllTagsRQ(
         () => {
-            setTagsData(tagsDataAll?.data.data);
-
             if(tagsDataAll?.data.data.length < 1){
-                setTagsFetchMessage("No projects to show.");
+                setTagsFetchMessage("No tags to show.");
             }
         },
         () => {
@@ -84,20 +82,6 @@ const TagManagerModule:React.FC<{customStyle?: string}> = ({customStyle}) => {
     const onCreateTagFailure = () => {
         showLoadingContent(false);
         openNotificationPopUpMessage("Error creating task tag!");
-    }
-
-    const dispatch = useDispatch();
-
-    const showLoadingContent = (setStatus: boolean) => {
-        dispatch(setLoading(setStatus));
-    }
-
-    const openNotificationPopUpMessage = (notificationMessage: string) => {
-        dispatch(setNotification({
-            isVisible: true,
-            message: notificationMessage,
-            type: 'info'
-        }))
     }
 
     return (

@@ -1,14 +1,15 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
+import ReactDOM from "react-dom";
 
 const LoadingModal: React.FC = () => {
   const isOpen = useSelector((state: any) => state.popUps.isLoading);
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-md z-55">
+  return ReactDOM.createPortal(
+    <div className="fixed z-55 inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-md">
       {/* Prevents interaction with background elements */}
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
@@ -27,7 +28,7 @@ const LoadingModal: React.FC = () => {
         <p className="text-gray-600">Plz wait</p>
       </motion.div>
     </div>
-  );
+  , document.body);
 };
 
 export default LoadingModal;

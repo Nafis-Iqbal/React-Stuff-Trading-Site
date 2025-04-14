@@ -1,5 +1,5 @@
 import BasicButton from "./BasicButton";
-import LoadingSpinnerBlock from "../LoadingSpinnerBlock";
+import LoadingSpinnerBlock from "../PlaceholderComponents/LoadingSpinnerBlock";
 import { useState } from "react";
 
 export const CommentRow = ({comment_id, commentText, onDelete}:{comment_id: number, commentText: string, onDelete: () => void}) => {

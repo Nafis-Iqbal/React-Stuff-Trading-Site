@@ -58,7 +58,7 @@ export const useCreateBidRQ = (onSuccessFn: (ApiResponse: any) => void, onErrorF
 
 export const updateBid = async (bid: Bid): Promise<AxiosResponse> => {
     try {
-        const response = api.put<ApiResponse<string>>("bids/update", {
+        const response = await api.put<ApiResponse<string>>("bids/update", {
             ...bid
         });
 
@@ -106,6 +106,34 @@ export const useDeleteBidRQ = (onSuccessFn: () => void, onErrorFn: () => void) =
     });
 }
 
+export const getUserOwnedBidViews = async (): Promise<AxiosResponse> => {
+    try {
+        const response = api.get<ApiResponse<Bid[]>>("bids/user_index_views");
+
+        return response;
+    }
+    catch (error) {
+        console.log("Error fetching user owned bid views");
+        throw error;
+    }
+}
+
+export const useGetUserOwnedBidViewsRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
+    return useQuery({
+        queryFn: getUserOwnedBidViews,
+        queryKey: ["userOwnedBidViews"],
+        staleTime: 30 * 1000,
+        cacheTime: 30 * 1000,
+        onSuccess: () => {
+            onSuccessFn();
+        },
+        onError: () => {
+            onErrorFn();
+        },
+        enabled
+    });
+}
+
 export const getBidDetail = async (bid_id: number): Promise<AxiosResponse> => {
     try {
         const response = api.get<ApiResponse<Bid>>(`bids/detail?id=${bid_id}`);
@@ -150,34 +178,6 @@ export const useGetUserOwnedBidsRQ = (onSuccessFn: () => void, onErrorFn: () => 
     return useQuery({
         queryFn: getUserOwnedBids,
         queryKey: ["userOwnedBids"],
-        staleTime: 30 * 1000,
-        cacheTime: 30 * 1000,
-        onSuccess: () => {
-            onSuccessFn();
-        },
-        onError: () => {
-            onErrorFn();
-        },
-        enabled
-    });
-}
-
-export const getUserOwnedBidViews = async (): Promise<AxiosResponse> => {
-    try {
-        const response = api.get<ApiResponse<Bid[]>>("bids/user_index_views");
-
-        return response;
-    }
-    catch (error) {
-        console.log("Error fetching user owned bid views");
-        throw error;
-    }
-}
-
-export const useGetUserOwnedBidViewsRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
-    return useQuery({
-        queryFn: getUserOwnedBidViews,
-        queryKey: ["userOwnedBidViews"],
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
         onSuccess: () => {

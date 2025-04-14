@@ -16,6 +16,7 @@ import NotificationPopUp from './Components/Modals/NotificationPopUpModal';
 import SidebarMenu from './Components/StructureComponents/SIdebarMenu';
 import OpenSidebarButton from './Components/StructureComponents/OpenSidebarButton';
 import ListingDetailModal from './Components/Modals/ListingDetailModal';
+import UploadPhotoModal from './Components/Modals/UploadPhotoModal';
 
 function App() {
   const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true'; // Ensure it returns a boolean
@@ -30,19 +31,16 @@ function App() {
             {isAuthenticated && (
               <>
                 <OpenSidebarButton customStyle="absolute top-1 left-2 md:hidden p-3 z-40" onClick={() => setIsSidebarMenuOpen(true)}/>
-
-                <LoadingModal/>
-                <NotificationPopUp/>
-                <ListingDetailModal/>
-
-                {isSidebarMenuOpen && (
-                    <div className="fixed inset-0 bg-black opacity-50 z-40 backdrop-blur-sm pointer-events-auto" onClick={() => setIsSidebarMenuOpen(false)}></div>
-                )}
-                {isSidebarMenuOpen && (
-                    <SidebarMenu isPopOutSidebar={true} onClose={() => setIsSidebarMenuOpen(false)}/>
-                )}
                 
-                <SidebarMenu isPopOutSidebar={false} onClose={() => {}}/>
+                {isSidebarMenuOpen && (
+                    <div className="fixed inset-0 bg-black opacity-50 z-65 backdrop-blur-sm pointer-events-auto" onClick={() => setIsSidebarMenuOpen(false)}></div>
+                )}
+                <SidebarMenu isPopOutSidebar={isSidebarMenuOpen} onClose={() => setIsSidebarMenuOpen(false)}/>
+                
+                <NotificationPopUp/>
+                <LoadingModal/>
+                <UploadPhotoModal/>
+                <ListingDetailModal/>
               </>
             )}
             {useRoutes(appRoutes)}

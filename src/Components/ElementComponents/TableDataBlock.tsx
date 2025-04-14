@@ -1,9 +1,9 @@
 import { isTagArray, isCommentArray } from "../../Types&Enums/CommonTypes";
 
-import LoadingSpinner from "../LoadingAnimationDiv";
+import LoadingSpinner from "../PlaceholderComponents/LoadingAnimationDiv";
 import TagListRow from "./TagListRow";
 import { CommentRow } from "./CommentRow";
-import { NoContentTableRow } from "./NoContentDiv";
+import { NoContentTableRow } from "../PlaceholderComponents/NoContentDiv";
 
 interface TableBlockProps<T>{
     dataList: T[];

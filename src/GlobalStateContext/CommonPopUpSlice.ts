@@ -11,6 +11,10 @@ interface CommonPopupState{
     listingDetailView: {
         listingId: number;
         isVisible: boolean;
+    };
+    photoUploadView: {
+        pic_url: string;
+        isVisible: boolean;
     }
 }
 
@@ -23,6 +27,10 @@ const initialState: CommonPopupState = {
     },
     listingDetailView: {
         listingId: 1,
+        isVisible: false,
+    },
+    photoUploadView: {
+        pic_url: '',
         isVisible: false,
     }
 }
@@ -56,8 +64,17 @@ const commonPopUpSlice = createSlice({
         setListingDetailViewVisibility: (state, action: PayloadAction<boolean>) => {
             state.listingDetailView.isVisible = action.payload;
         },
+        setPhotoUploadView: (
+            state, 
+            action: PayloadAction<{
+                pic_url: string;
+                isVisible: boolean;
+            }>
+        ) => {
+            state.photoUploadView = action.payload;
+        }
     },
 });
 
-export const {setLoading, setNotification, setListingDetailView, setListingDetailViewVisibility} = commonPopUpSlice.actions;
+export const {setLoading, setNotification, setListingDetailView, setListingDetailViewVisibility, setPhotoUploadView} = commonPopUpSlice.actions;
 export default commonPopUpSlice.reducer;

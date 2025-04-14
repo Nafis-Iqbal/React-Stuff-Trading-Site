@@ -49,8 +49,11 @@ declare global{
     interface Trade {
         id: number;
         listing_id: number;
+        listing_title?: string;
         buyer_id: number;
+        buyer_name?: string;
         seller_id: number;
+        seller_name?: string;
         status: tradeStatus;
         amount: number;
     }

@@ -3,11 +3,10 @@ import { useState, useEffect } from "react";
 import { BidApi, ListingApi } from "../../Services/API";
 import { isNumber } from "../../Utilities/Utilities";
 import { queryClient } from "../../Services/API/ApiInstance";
-import { setNotification, setLoading } from "../../GlobalStateContext/CommonPopUpSlice"; 
-import { useDispatch } from "react-redux";
+import { useGlobalUI } from "../../Hooks/StateHooks/GlobalStateHooks";
 
-import BidViewBlock from "./BidViewBlock";
-import LoadingSpinnerBlock from "../LoadingSpinnerBlock";
+import BidViewBlock from "../ElementComponents/BidViewBlock";
+import LoadingSpinnerBlock from "../PlaceholderComponents/LoadingSpinnerBlock";
 
 interface BidManagerProps{
     listingDetailData: Listing;
@@ -23,8 +22,9 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
         bidder_id: userData?.id ?? 0,
     });
     const [isSyncingBidSubmission, setIsSyncingBidSubmission] = useState(false);
+    const {openNotificationPopUpMessage} = useGlobalUI();
 
-    const {data: bidListData} = ListingApi.useGetListingBidsRQ(
+    const {data: bidListData} = ListingApi.useGetListingBidViewsRQ(
         listingDetailData?.id ?? 0,
         () => {
 
@@ -39,8 +39,9 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
         (responseData) => {
             if(responseData.data.status === "success")
             {
-                onSuccess(bidFormData);
-                queryClient.invalidateQueries(["listings"]);
+                onBidCreateSuccess(bidFormData);
+                queryClient.invalidateQueries(["listing_bids", listingDetailData?.id ?? 0]);
+                queryClient.invalidateQueries(["userOwnedBids"]);
 
                 setBidFormData({
                     listing_id: listingDetailData?.id ?? 0,
@@ -50,17 +51,16 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
                 });
             }
             else{
-                onFailure();
+                onBidCreateFailure();
             }
         },
         () => {
-            onFailure();
+            onBidCreateFailure();
         }
     );
 
     useEffect(() => {
         setBidList(bidListData?.data.data);
-        console.log(bidList);
     }, [bidListData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -79,14 +79,14 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
         }));
     };
 
-    const handleBidSubmit = (e: React.FormEvent) => {
+    const handleCreateBidSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         createBidMutate(bidFormData);
         setIsSyncingBidSubmission(true);
     }
 
-    const onSuccess = (bidFormData: Bid) => {
+    const onBidCreateSuccess = (bidFormData: Bid) => {
         setIsSyncingBidSubmission(false);
 
         if(bidListData)
@@ -100,44 +100,34 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
         }
     };
 
-    const onFailure = () => {
+    const onBidCreateFailure = () => {
         openNotificationPopUpMessage("Failed to submit bid.");
         setIsSyncingBidSubmission(false);
     };
 
-    const dispatch = useDispatch();
-
-    const showLoadingContent = (setStatus: boolean) => {
-        dispatch(setLoading(setStatus));
-    }
-
-    const openNotificationPopUpMessage = (notificationMessage: string) => {
-        dispatch(setNotification({
-            isVisible: true,
-            message: notificationMessage,
-            type: 'info'
-        }))
-    }
-
     return (
         <>
             {/* BIDS MANAGER */}
-            <div className="flex flex-col md:w-[35%] flex-1">
+            <div className="flex flex-col flex-1">
                 {/* Listing Bids List Section */}
                 <div className="flex flex-col p-1 my-2  max-h-fit text-center bg-pink-400 rounded-md">
                     <p className="px-1 py-2 mx-2 my-1 text-lg md:text-xl bg-pink-200 text-pink-700 font-semibold rounded-sm">Bids</p>
 
-                    <ul className="p-1 mx-1 my-1 space-y-1 max-h-[300px] md:max-h-[400px] overflow-y-auto">
+                    <ul className="p-1 m-1 space-y-1 max-h-[300px] md:max-h-[400px] overflow-y-auto">
                         {(bidList && bidList.length > 0) ? (bidList.map(
                             (bid) => {
                                 return (
                                     <li>
                                         <BidViewBlock 
+                                            id={bid?.id ?? 0}
                                             description={bid.description} 
                                             amount={bid.amount} 
+                                            listing_id={listingDetailData?.id ?? 0}
+                                            listing_user_id={listingDetailData?.user_id ?? 0}
                                             bidder_id={bid.bidder_id}
+                                            own_user_id={userData.id ?? 0}
                                             bidder_name={bid?.bidder_name ?? "User 1"} 
-                                            bidder_picture="/images/profile_picture.jpg"
+                                            bidder_picture={bid?.bidder_picture ?? "/images/profile_picture.jpg"}
                                         />
                                     </li>
                                 );
@@ -151,39 +141,41 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
                 </div>
 
                 {/* Bids Creation Section*/}
-                <div className="flex flex-col flex-1 p-1 my-2 max-h-fit justify-start bg-pink-400 rounded-md">
-                    <form onSubmit={(e) => handleBidSubmit(e)}>
-                        <p className="ml-2 my-2 text-lg md:text-xl font-semibold">Create Bid</p>
+                {(listingDetailData.user_id !== userData.id) && (
+                    <div className="flex flex-col flex-1 p-1 my-2 max-h-fit justify-start bg-pink-400 rounded-md">
+                        <form onSubmit={(e) => handleCreateBidSubmit(e)}>
+                            <p className="ml-2 my-2 text-lg md:text-xl font-semibold text-white">Create Bid</p>
 
-                        <div className="flex justify-between mx-2">
-                            <textarea
-                                id="description"
-                                title="description"
-                                name="description"
-                                value={bidFormData.description}
-                                onChange={handleChange}
-                                required
-                                className="mt-1 px-2 py-1 block w-[65%] h-[70px] md:h-[100px] text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
+                            <div className="flex justify-between mx-2">
+                                <textarea
+                                    id="description"
+                                    title="description"
+                                    name="description"
+                                    value={bidFormData.description}
+                                    onChange={handleChange}
+                                    required
+                                    className="mt-1 px-2 py-1 block w-[65%] h-[70px] md:h-[100px] resize-none text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
 
-                            <input
-                                id="amount"
-                                title="amount"
-                                name="amount"
-                                value={bidFormData.amount}
-                                onChange={handleChange}
-                                required
-                                className="mt-1 px-2 py-2 block w-[30%] h-fit text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                        </div>
+                                <input
+                                    id="amount"
+                                    title="amount"
+                                    name="amount"
+                                    value={bidFormData.amount}
+                                    onChange={handleChange}
+                                    required
+                                    className="mt-1 px-2 py-2 block w-[30%] h-fit text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
+                            </div>
 
-                        <div className="flex justify-start space-x-2">
-                            <button type="submit" className="px-4 py-2 m-2 bg-emerald-400 hover:bg-emerald-500 text-white rounded-sm">Bid!</button>
+                            <div className="flex justify-start space-x-2">
+                                <button type="submit" className="px-4 py-2 m-2 bg-emerald-400 hover:bg-emerald-500 text-white rounded-sm">Bid!</button>
 
-                            <LoadingSpinnerBlock isOpen={isSyncingBidSubmission}/>
-                        </div>
-                    </form>
-                </div>
+                                <LoadingSpinnerBlock isOpen={isSyncingBidSubmission}/>
+                            </div>
+                        </form>
+                    </div>
+                )}
             </div>
         </>
     );

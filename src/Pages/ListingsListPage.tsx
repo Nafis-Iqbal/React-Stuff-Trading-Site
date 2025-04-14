@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
 
 import { UserApi, ListingApi } from "../Services/API";
-import { setNotification, setLoading, setListingDetailView } from "../GlobalStateContext/CommonPopUpSlice";
+import { useGlobalUI } from "../Hooks/StateHooks/GlobalStateHooks";
 
 import ListingInfoBlock from "../Components/ElementComponents/ListingInfoBlock";
 import CreateListingModal from "../Components/Modals/CreateListingModal";
@@ -11,6 +10,8 @@ import CreateListingModal from "../Components/Modals/CreateListingModal";
 const ListingsListPage:React.FC = () => {
     const [isCreateListingOpen, setIsCreateListingOpen] = useState(false);
     const [listingsList, setListingsList] = useState<Listing[]>([]);
+
+    const {showListingDetail, showLoadingContent, openNotificationPopUpMessage} = useGlobalUI();
 
     const { userId } = useParams();
     const parsedUserId = Number(userId);
@@ -55,27 +56,6 @@ const ListingsListPage:React.FC = () => {
     const onCreateListingFailure = () => {
         showLoadingContent(false);
         openNotificationPopUpMessage("Error creating listing!");
-    }
-
-    const dispatch = useDispatch();
-
-    const showListingDetail = (listingId: number) => {
-        dispatch(setListingDetailView({
-            isVisible: true,
-            listingId: listingId
-        }))
-    }
-
-    const showLoadingContent = (setStatus: boolean) => {
-        dispatch(setLoading(setStatus));
-    }
-
-    const openNotificationPopUpMessage = (notificationMessage: string) => {
-        dispatch(setNotification({
-            isVisible: true,
-            message: notificationMessage,
-            type: 'info'
-        }))
     }
 
     return (

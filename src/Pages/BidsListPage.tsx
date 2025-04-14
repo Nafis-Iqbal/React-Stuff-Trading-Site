@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from "react";
-import { useDispatch } from "react-redux";
 
 import { BidApi } from "../Services/API";
-import { setListingDetailView } from "../GlobalStateContext/CommonPopUpSlice";
 
 import BidInfoBlock from "../Components/ElementComponents/BidInfoBlock";
+import { useGlobalUI } from "../Hooks/StateHooks/GlobalStateHooks";
 
 const BidsListPage: React.FC = () => {
+    const {showListingDetail} = useGlobalUI();
     const [bidList, setBidList] = useState<Bid[]>();
 
     const {data: bidListData} = BidApi.useGetUserOwnedBidViewsRQ(
@@ -22,15 +22,6 @@ const BidsListPage: React.FC = () => {
     useEffect(() => {
         setBidList(bidListData?.data.data);
     }, [bidListData]);
-
-    const dispatch = useDispatch();
-
-    const showListingDetail = (listingId: number) => {
-        dispatch(setListingDetailView({
-            isVisible: true,
-            listingId: listingId
-        }))
-    }
 
     return (
         <div className="flex flex-1 flex-col md:flex-row bg-pink-200 md:bg-pink-100 text-white min-h-screen">

@@ -54,6 +54,30 @@ export const useUpdateTradeRQ = (onSuccessFn: (ApiResponse: any) => void, onErro
     });
 };
 
+// Delete Trade
+const deleteTrade = async (tradeId: number): Promise<AxiosResponse> => {
+    try {
+        const response = await api.delete<ApiResponse<string>>(`trades/delete?id=${tradeId}`);
+
+        return response;
+    } catch (error) {
+        console.log('Error deleting trade');
+        throw error;
+    }
+};
+
+export const useDeleteTradeRQ = (onSuccessFn: (data: any) => void, onErrorFn: () => void) => {
+    return useMutation({
+        mutationFn: deleteTrade,
+        onSuccess: (data) => {
+            onSuccessFn(data);
+        },
+        onError: () => {
+            onErrorFn();
+        },
+    });
+};
+
 export const getAllTrades = async (): Promise<AxiosResponse> => {
     try {
         const response = await api.get<ApiResponse<Trade[]>>("trades");
@@ -98,6 +122,62 @@ export const useGetTradeDetailRQ = (id: number, onSuccessFn: () => void, onError
     return useQuery({
         queryFn: () => getTradeDetail(id),
         queryKey: ["tradeDetail", id],
+        staleTime: 30 * 1000,
+        cacheTime: 30 * 1000,
+        onSuccess: () => {
+            onSuccessFn();
+        },
+        onError: () => {
+            onErrorFn();
+        },
+        enabled
+    });
+};
+
+export const getUserTradeViews = async (user_id: number): Promise<AxiosResponse> => {
+    try {
+        const response = await api.get<ApiResponse<Trade[]>>(`trades/user_index_views?user_id=${user_id}`);
+
+        return response;
+    }
+    catch (error) {
+        console.log("Error fetching user trades");
+        throw error;
+    }
+};
+
+export const useGetUserTradeViewsRQ = (user_id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
+    return useQuery({
+        queryFn: () => getUserTradeViews(user_id),
+        queryKey: ["user_trades", user_id],
+        staleTime: 30 * 1000,
+        cacheTime: 30 * 1000,
+        onSuccess: () => {
+            onSuccessFn();
+        },
+        onError: () => {
+            onErrorFn();
+        },
+        enabled
+    });
+};
+
+export const getUserTrades = async (user_id: number): Promise<AxiosResponse> => {
+    try {
+        const response = await api.get<ApiResponse<Trade[]>>(`trades/user_index?user_id=${user_id}`);
+
+        return response;
+    }
+    catch (error) {
+        console.log("Error fetching user trades");
+        throw error;
+    }
+};
+
+export const useGetUserTradesRQ = (user_id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
+    return useQuery({
+        queryFn: () => getUserTrades(user_id),
+        queryKey: ["user_trades", user_id],
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
         onSuccess: () => {

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 import BasicButton from "./BasicButton";
-import LoadingSpinnerBlock from "../LoadingSpinnerBlock";
+import LoadingSpinnerBlock from "../PlaceholderComponents/LoadingSpinnerBlock";
 
 export {};
 

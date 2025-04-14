@@ -1,17 +1,17 @@
 import {useEffect, useState} from 'react';
-import { useDispatch } from 'react-redux';
 
-import { queryClient } from '../Services/API/ApiInstance';
-import { UserApi } from '../Services/API';
-import { setNotification, setLoading } from '../GlobalStateContext/CommonPopUpSlice';
-import makeFirstLetterUppercase, { checkIfSubstring } from '../Utilities/Utilities';
+import { queryClient } from '../../Services/API/ApiInstance';
+import { UserApi } from '../../Services/API';
+import makeFirstLetterUppercase, { checkIfSubstring } from '../../Utilities/Utilities';
+import { useGlobalUI } from '../../Hooks/StateHooks/GlobalStateHooks';
 
-import ProfilePicture from './StructureComponents/ProfilePicture';
-import EditUserModal from '../Components/Modals/EditUserInfoModal';
+import ProfilePicture from './../StructureComponents/ProfilePicture';
+import EditUserModal from '../../Components/Modals/EditUserInfoModal';
 
-const UserInfo = ({userId, profilePicture, customStyle} : {userId: number, profilePicture: string, customStyle?: string}) => {
+const UserInfoModule = ({userId, profilePicture, customStyle} : {userId: number, profilePicture: string, customStyle?: string}) => {
   const [isEditUserOpen, setIsEditUserOpen] = useState(false);
   const [canEditInfo, setCanEditInfo] = useState(true); 
+  const {showLoadingContent, openNotificationPopUpMessage} = useGlobalUI();
 
   const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
 
@@ -47,29 +47,17 @@ const UserInfo = ({userId, profilePicture, customStyle} : {userId: number, profi
     openNotificationPopUpMessage("Error updating User info!");
   }
 
-  const dispatch = useDispatch();
-
-  const showLoadingContent = (setStatus: boolean) => {
-      dispatch(setLoading(setStatus));
-  }
-
-  const openNotificationPopUpMessage = (notificationMessage: string) => {
-      dispatch(setNotification({
-          isVisible: true,
-          message: notificationMessage,
-          type: 'info'
-      }))
-  }
-
   useEffect(() => {
-    if(checkIfSubstring(userData?.data.data.user_name ?? '', "Guest") || ownUserData?.data.data.id !== userId){
+    if(userData?.data.data && ownUserData?.data.data && (checkIfSubstring(userData?.data.data.user_name ?? '', "Guest") || ownUserData?.data.data.id !== userId)){
       setCanEditInfo(false);
+      console.log(userData?.data.data, ownUserData?.data.data)
     }
   },[userData, ownUserData, userId]);
 
   return (
     <div className={`rounded-lg space-y-3 shadow-sm ${customStyle}`}>
-      <ProfilePicture src={profilePicture} customStyle="mb-2"/>
+      <ProfilePicture own_user_id={ownUserData?.data.data.id} picture_user_id={userId} src={profilePicture} customStyle="mb-2"/>
+      
       <h3 className="mb-4 text-2xl font-bold text-pink-900">{userData?.data.data.user_name ?? "Fix user name"}</h3>
 
       <EditUserModal
@@ -98,9 +86,9 @@ const UserInfo = ({userId, profilePicture, customStyle} : {userId: number, profi
 
             <tr>
               <td className='text-lg md:text-xl text-gray-700'>
-              <strong>Role:</strong>
+                <strong>Role:</strong>
               </td>
-              <td className='text-xl font-semibold bg-pink-200 rounded-md'>
+              <td className='text-xl font-bold text-pink-800 rounded-md'>
                 {makeFirstLetterUppercase(userData?.data.data.role)}
               </td>
             </tr>
@@ -130,4 +118,4 @@ const UserInfo = ({userId, profilePicture, customStyle} : {userId: number, profi
   );
 };
 
-export default UserInfo;
+export default UserInfoModule;

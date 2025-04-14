@@ -1,13 +1,8 @@
 
 import { useState } from "react";
-
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { setListingDetailView } from "../../GlobalStateContext/CommonPopUpSlice";
-import BasicButton from "./BasicButton";
-import LoadingSpinnerBlock from "../LoadingSpinnerBlock";
-import store from "../../GlobalStateContext/GlobalStateStore";
+import { useGlobalUI } from "../../Hooks/StateHooks/GlobalStateHooks";
 
 interface ListingViewProps{
     listingId: number;
@@ -36,15 +31,9 @@ const ListingViewBlock: React.FC<ListingViewProps> = ({
     bestBidDescription,
     bestBidPrice
 }) => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    const openListingDetail = () => {
-        dispatch(setListingDetailView({
-            isVisible: true,
-            listingId: listingId
-        }))
-    }
+    
+    const {showListingDetail} = useGlobalUI();
 
     return(
         <div className="flex flex-col w-full p-2 bg-pink-100 rounded-md">
@@ -66,13 +55,13 @@ const ListingViewBlock: React.FC<ListingViewProps> = ({
                             </div>
                             
                             <div className="flex justify-between items-center w-[35%]">
-                                <img src={bestBidUserPhoto} alt="bidder" className="w-[45%] rounded-full"></img>
+                                <img src={bestBidUserPhoto} alt="bidder" className="aspect-square object-cover w-[45%] rounded-full"></img>
                                 <button onClick={() => navigate(`/profile/${bestBidderId ?? 0}`)} className="w-[45%] p-1 text-white overflow-hidden text-xs md:text-sm text-ellipsis bg-pink-500 rounded-sm">{bestBidUserName}</button>
                             </div>
                         </div>
                     )}
                     
-                    <button className="p-2 rounded-sm bg-emerald-400 hover:bg-emerald-500 text-white disabled:bg-gray-400 disabled:cursor-not-allowed" onClick={() => openListingDetail()}>View Listing</button>
+                    <button className="p-2 rounded-sm bg-emerald-400 hover:bg-emerald-500 text-white disabled:bg-gray-400 disabled:cursor-not-allowed" onClick={() => showListingDetail(listingId)}>View Listing</button>
                 </div>
             </div>
         </div>

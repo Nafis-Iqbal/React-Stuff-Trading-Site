@@ -4,7 +4,7 @@ import { queryClient } from '../Services/API/ApiInstance';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
-import UserInfo from '../Components/UserInfo';
+import UserInfoModule from '../Components/ModularComponents/UserInfo';
 import { UserApi } from '../Services/API';
 import ScrollToTopButton from '../Components/StructureComponents/ScrollToTopButton';
 import TagManagerModule from '../Components/ModularComponents/TagManagerModule';
@@ -33,7 +33,7 @@ const ProfilePage: React.FC = () => {
         <div className="md:hidden min-h-[30px] bg-pink-200"></div>
 
         <main className="flex flex-col md:w-[60%] h-full bg-pink-200">
-            <UserInfo userId={parsedUserId} customStyle="p-3 m-2 bg-pink-100" profilePicture='/images/profile_picture.jpg'/>
+            <UserInfoModule userId={parsedUserId} customStyle="p-3 m-2 bg-pink-100" profilePicture={ownUserData?.data.data.profile_picture ?? '/images/profile_picture.jpg'}/>
             
             {/* User Activities Info */}
             <div className='flex flex-col p-2 mx-2 space-y-2 md:space-y-3 bg-pink-100 rounded-md'>

@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import { TradeApi, UserApi } from "../Services/API";
+import { useParams } from "react-router-dom";
+
 import TradeInfoBlock from "../Components/ElementComponents/TradeInfoBlock";
 
 const TradesListPage:React.FC = () => {
-    const openListingDetailModal = () => {
+    const [tradeList, setTradeList] = useState<Trade[]>();
 
-    }
+    const { userId } = useParams();
+    const parsedUserId = Number(userId);
+
+    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
+
+    const {data: tradeListData} = TradeApi.useGetUserTradeViewsRQ(
+        parsedUserId,
+        () => {
+
+        },
+        () => {
+
+        },
+        (parsedUserId > 0)
+    );
+
+    useEffect(() => {
+        if(tradeListData?.data.data) setTradeList(tradeListData.data.data);
+    }, [tradeListData])
     
     return (
         <div className="flex flex-1 flex-col md:flex-row bg-pink-200 md:bg-pink-100 text-white min-h-screen">
@@ -18,12 +40,26 @@ const TradesListPage:React.FC = () => {
                 </div>
 
                 <ul className="p-3 mx-2 mt-6 mb-2 space-y-3 bg-pink-100 rounded-lg">
-                    <li>
-                        <TradeInfoBlock listingName="Listing 1" buyerName="Big Boy" tradeItems="bid description" tradePrice={40} onViewListingClick={() => openListingDetailModal()}/>
-                    </li>
-                    <li>
-                        <TradeInfoBlock listingName="Listing 2" buyerName="Big Boy2" tradeItems="bid description" tradePrice={40} onViewListingClick={() => openListingDetailModal()}/>
-                    </li>
+                    {(tradeList && tradeList.length > 0) && (
+                        tradeList.map((trade: Trade) => {
+                            return (
+                                <li>
+                                    <TradeInfoBlock 
+                                        trade_id={trade.id}
+                                        own_user_id={ownUserData?.data.data.id}
+                                        listingName={trade?.listing_title ?? "Fix Listing Name"}
+                                        listing_id={trade.listing_id}
+                                        buyer_id={trade.buyer_id} 
+                                        buyer_name={trade?.buyer_name ?? "Fix Buyer Name"}
+                                        seller_id={trade.seller_id}
+                                        seller_name={trade?.seller_name ?? "Fix Seller Name"}
+                                        trade_status={trade.status}
+                                        tradePrice={trade.amount} 
+                                    />
+                                </li>
+                            )
+                        })
+                    )}
                 </ul>
             </main>
         </div>

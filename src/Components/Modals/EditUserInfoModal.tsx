@@ -24,10 +24,12 @@ const EditUserModal: React.FC<EditUserInfoModalProps> = ({
                 setFormData(defaultUserInfo);
             }
             else{
+                setFormData(defaultUserInfo);
                 onFailure();
             }
         },
         () => {
+            setFormData(defaultUserInfo);
             onFailure();
         }
     );
@@ -57,6 +59,7 @@ const EditUserModal: React.FC<EditUserInfoModalProps> = ({
             return;
         }
 
+        console.log(formData);
         onSubmit();
         
         updateUserInfoMutate(formData);
