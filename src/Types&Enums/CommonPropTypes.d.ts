@@ -1,4 +1,4 @@
-import {priority, statusEnum, role} from "../Types&Enums/Enums";
+import {priority, statusEnum, role} from "./Enums";
 
 declare global{
     interface BasicButtonProps<T>
@@ -11,16 +11,6 @@ declare global{
         children?: React.ReactNode;
         value?: T;
     }
-
-    // interface CreateTaskModalProps
-    // {
-    //     isOpen: boolean;
-    //     projects: ProjectData[];
-    //     onClose: () => void;
-    //     onSubmit: () => void;
-    //     onSuccess: (data: Task) => void;
-    //     onFailure: () => void;
-    // }
 
     interface CreateTagModalProps
     {

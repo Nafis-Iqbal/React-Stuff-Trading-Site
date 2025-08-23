@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 interface ListingInfoProp{
     name: string;
     bidsCount: number;
-    highestBidPrice?: number;
+    highestBidPrice: number;
     onClick: () => void;
 }
 
@@ -19,7 +19,7 @@ const ListingInfoBlock: React.FC<ListingInfoProp> = ({name, bidsCount, highestBi
                 <div className="flex flex-col">
                     <p className="font-bold text-pink-700">Max Bid</p>
 
-                    <p className="p-1 text-lg md:text-xl text-red-600">{highestBidPrice ?? "N/A"}</p>
+                    <p className="p-1 text-lg md:text-xl text-red-600">{highestBidPrice > 0 ? highestBidPrice : "N/A"}</p>
                 </div>
             </div>
         </button>

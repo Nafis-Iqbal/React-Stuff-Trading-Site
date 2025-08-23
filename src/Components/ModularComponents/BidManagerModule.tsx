@@ -7,6 +7,7 @@ import { useGlobalUI } from "../../Hooks/StateHooks/GlobalStateHooks";
 
 import BidViewBlock from "../ElementComponents/BidViewBlock";
 import LoadingSpinnerBlock from "../PlaceholderComponents/LoadingSpinnerBlock";
+import { listingStatus } from "../../Types&Enums/Enums";
 
 interface BidManagerProps{
     listingDetailData: Listing;
@@ -61,7 +62,11 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
 
     useEffect(() => {
         setBidList(bidListData?.data.data);
-    }, [bidListData]);
+        setBidFormData((prevData) => ({
+            ...prevData,
+            listing_id: listingDetailData?.id ?? 0,
+        }));
+    }, [bidListData, listingDetailData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         let {name, value} = e.target;
@@ -104,7 +109,7 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
         openNotificationPopUpMessage("Failed to submit bid.");
         setIsSyncingBidSubmission(false);
     };
-
+    
     return (
         <>
             {/* BIDS MANAGER */}
@@ -124,6 +129,7 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
                                             amount={bid.amount} 
                                             listing_id={listingDetailData?.id ?? 0}
                                             listing_user_id={listingDetailData?.user_id ?? 0}
+                                            listing_status={listingDetailData?.status}
                                             bidder_id={bid.bidder_id}
                                             own_user_id={userData.id ?? 0}
                                             bidder_name={bid?.bidder_name ?? "User 1"} 
@@ -169,7 +175,13 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
                             </div>
 
                             <div className="flex justify-start space-x-2">
-                                <button type="submit" className="px-4 py-2 m-2 bg-emerald-400 hover:bg-emerald-500 text-white rounded-sm">Bid!</button>
+                                <button 
+                                    type="submit" 
+                                    className="px-4 py-2 m-2 bg-emerald-400 hover:bg-emerald-500 text-white rounded-sm"
+                                    disabled={listingDetailData?.status === listingStatus.available ? false : true}
+                                >
+                                    Bid!
+                                </button>
 
                                 <LoadingSpinnerBlock isOpen={isSyncingBidSubmission}/>
                             </div>

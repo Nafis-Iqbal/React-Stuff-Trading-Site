@@ -86,7 +86,7 @@ const TagManagerModule:React.FC<{customStyle?: string}> = ({customStyle}) => {
 
     return (
         <div id="tag_section" className={`relative flex flex-col justify-left items-center ${customStyle}`}>
-            <h1 className="text-pink-800 pl-3 py-2 font-bold text-lg md:text-xl">Tag Manager</h1>
+            <h1 className="text-pink-800 pl-3 py-2 font-semibold text-xl md:text-2xl">Tag Manager</h1>
 
             <CreateTagModal
                 isOpen={isCreateTagOpen}

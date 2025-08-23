@@ -11,41 +11,66 @@ import { useGlobalUI } from "../../Hooks/StateHooks/GlobalStateHooks";
 
 import BidManagerModule from "../ModularComponents/BidManagerModule";
 import LoadingSpinnerBlock from "../PlaceholderComponents/LoadingSpinnerBlock";
+import { ImageViewer } from "../ElementComponents/ImageViewer";
+import { ImageUploadModule } from "../ModularComponents/ImageUploadModule";
+
+const defaultListingForm: Listing = {
+    id: 0,
+    user_id: 0,
+    title: '',
+    description: '',
+    location: '',
+    exchange_items: '',
+    price: 0,
+    status: listingStatus.available,
+    listingPicture: ''
+}
 
 const ListingDetailModal: React.FC = () => {
+    const dispatch = useDispatch();
     const isOpen = useSelector((state: any) => state.popUps.listingDetailView.isVisible);
     const listingId = useSelector((state: any) => state.popUps.listingDetailView.listingId);
-    const {openNotificationPopUpMessage} = useGlobalUI();
-    
-    const [listingFormData, setListingFormData] = useState<Listing>({
-        id: 0,
-        user_id: 0,
-        title: '',
-        description: '',
-        location: '',
-        exchange_items: '',
-        price: 0,
-        status: listingStatus.available,
-        listingPicture: ''
-    });
 
-    const [listingDetail, setListingDetail] = useState<Listing>();
+    const {openNotificationPopUpMessage, showLoadingContent} = useGlobalUI();
+
+    const [listingFormData, setListingFormData] = useState<Listing>(defaultListingForm);
+
+    const [isImageUploadReady, setIsImageUploadReady] = useState(false);
+    const [imageUploadTrigger, setImageUploadTrigger] = useState(false);
+    const [isEditingListingImages, setIsEditingListingImages] = useState(false);
+
     const [isListingStatusSyncing, setIsListingStatusSyncing] = useState(false);
-
+    
     const {data: userData} = UserApi.useGetAuthenticatedUserRQ();
 
     const {data: listingDetailData} = ListingApi.useGetListingDetailRQ(
         listingId,
-        () => {
-
-        },
-        () => {
-
-        },
         (listingId > 0)
     );
 
     const {mutate: updateListingMutate} = ListingApi.useUpdateListingRQ(
+        (responseData) => {
+            if(responseData.data.status === "success")
+            {
+                onListingUpdateSuccess();
+                queryClient.invalidateQueries(["listing_detail", listingId]);
+                queryClient.invalidateQueries(["listings"]);
+                queryClient.invalidateQueries(["listing_views"]);
+
+                if(isEditingListingImages)setIsEditingListingImages(false);
+            }
+            else{
+                onListingUpdateFailure();
+                if(isEditingListingImages)setIsEditingListingImages(false);
+            }
+        },
+        () => {
+            onListingUpdateFailure();
+            if(isEditingListingImages)setIsEditingListingImages(false);
+        }
+    );
+
+    const {mutate: deleteListingImagesMutate} = ListingApi.useDeleteListingImagesRQ(
         (responseData) => {
             if(responseData.data.status === "success")
             {
@@ -63,22 +88,6 @@ const ListingDetailModal: React.FC = () => {
         }
     );
 
-    useEffect(() => {
-        if(listingDetailData?.data.data.length > 0)setListingDetail(listingDetailData?.data.data[0]);
-
-        setListingFormData({
-            id: listingDetail?.id ?? 0,
-            user_id: listingDetail?.user_id ?? 0,
-            title: listingDetail?.title ?? '',
-            description: listingDetail?.description ?? '',
-            location: listingDetail?.location ?? '',
-            exchange_items: listingDetail?.exchange_items ?? '',
-            price: listingDetail?.price ?? 0,
-            status: listingDetail?.status ?? listingStatus.available,
-            listingPicture: listingDetail?.listingPicture ?? ''
-        });
-    }, [listingDetailData])
-
     const handleListingStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setIsListingStatusSyncing(true);
     
@@ -90,20 +99,28 @@ const ListingDetailModal: React.FC = () => {
 
     const onListingUpdateSuccess = () => {
         openNotificationPopUpMessage("Listing updated successfully.");
+        showLoadingContent(false);
+
         setIsListingStatusSyncing(false);
     };
 
     const onListingUpdateFailure = () => {
         openNotificationPopUpMessage("Failed to update listing.");
+        showLoadingContent(false);
+        
         setIsListingStatusSyncing(false);
     };
-
-    const dispatch = useDispatch();
 
     const onCloseModal = () => {
         dispatch(setListingDetailViewVisibility(false));
     }
 
+    const uploadListingPicURLBuilder = (resourceId: number) => {
+        return `stuff-trader/listings/${resourceId}/images`;
+    }
+
+    const listingDetail = listingDetailData?.data.data;
+    
     if(!isOpen) return null;
 
     return ReactDOM.createPortal(
@@ -118,11 +135,53 @@ const ListingDetailModal: React.FC = () => {
                 </div>         
 
                 <div className="flex flex-col flex-1 md:flex-row w-full h-full">
-                    <div className="flex flex-col md:w-[65%]">
-                        <div className="relative flex justify-center items-center p-2 my-2 md:mr-2 h-[70%] bg-gray-600 rounded-md">
-                            <img className="max-h-full max-w-full object-contain" src="/images/keyboard.jpg" alt="keyb"></img>
-                            {(listingDetail?.user_id === userData?.data.data.id) && (
-                                <button className="absolute bottom-1 right-1 bg-emerald-400 hover:bg-emerald-500 text-white py-2 px-4 rounded-sm">Upload photo<span className="text-red-500 font-bold">(Max 3)</span></button>
+                    <div className="flex flex-col w-full md:w-[65%]">
+                        <div className="relative flex justify-center items-start p-2 my-2 md:mr-2 h-[400px] md:h-[70%] bg-pink-300 rounded-md">
+                            <ImageViewer
+                                className="h-[95%]"
+                                imageList={
+                                    listingDetail?.images ? 
+                                    listingDetail?.images.map(
+                                        (image: any) => ({ imageURL: image.imageURL })
+                                    ) : []} 
+                            />
+
+                            {(listingDetail?.user_id === userData?.data.data.id && listingDetail.status === listingStatus.available) && (
+                                <div className="absolute bottom-1 right-1">
+                                    {!isEditingListingImages &&
+                                        <button 
+                                            className="mr-1 bg-emerald-400 hover:bg-emerald-500 text-xs md:text-sm text-white py-1 px-2 rounded-sm"
+                                            onClick={() => setIsEditingListingImages(true)}
+                                        >
+                                                Upload photo
+                                                <span className="text-red-500 font-bold">
+                                                    (Max 3)
+                                                </span>
+                                        </button>
+                                    }
+                                    
+                                    {isEditingListingImages &&
+                                        <div className="flex flex-col space-y-3">
+                                            <ImageUploadModule
+                                                imageUploadMode="edit"
+                                                actionTrigger={imageUploadTrigger}
+                                                resourceId={listingDetail?.id}
+                                                resourceLabel="Listing Image"
+                                                setFileReadyState={setIsImageUploadReady}
+                                                pic_url_Builder={uploadListingPicURLBuilder}
+                                                updateResourceMutation={({ id, imageURLs } : {id: number, imageURLs: string[]}) => updateListingMutate({ id, imageURLs })}
+                                                deleteResourceMutation={({id, imageIds} : {id: number, imageIds: number[]}) => deleteListingImagesMutate({id, imageIds})}
+                                            />
+
+                                            <button 
+                                                className={`${isImageUploadReady ? "bg-emerald-400 hover:bg-emerald-500" : "bg-red-400 hover:bg-red-500"} text-white py-1 px-2 rounded-sm`}
+                                                onClick={isImageUploadReady ? () => setImageUploadTrigger(true) : () => setIsEditingListingImages(false)}
+                                            >
+                                                {isImageUploadReady ? "Upload" : "Cancel"}
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
                             )}
                         </div>
 
@@ -133,24 +192,24 @@ const ListingDetailModal: React.FC = () => {
                             </div>
 
                             {listingDetail?.user_id === userData?.data.data.id && (
-                                <div className="flex items-center">
-                                <p className="p-2 m-2 bg-gray-100 text-base md:text-lg text-pink-700 font-semibold border-2 border-pink-700 rounded-md">Switch Listing Status</p>
+                                <div className="flex items-center justify-between md:justify-start">
+                                    <p className="p-2 m-2 bg-gray-100 text-base md:text-lg text-pink-700 font-semibold border-2 border-pink-700 rounded-md">Switch Listing Status</p>
 
-                                <select
-                                    id="status"
-                                    value={listingDetail?.status}
-                                    onChange={handleListingStatusChange}
-                                    className="mt-1 p-2 block w-[30%] h-fit text-base md:text-lg text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                                >
-                                    {Object.values(listingStatus).map((status) => (
-                                        <option key={status} value={status}>
-                                        {status.charAt(0).toUpperCase() + status.slice(1)} {/* Capitalize */}
-                                        </option>
-                                    ))}
-                                </select>
+                                    <select
+                                        id="status"
+                                        value={listingDetail?.status}
+                                        onChange={handleListingStatusChange}
+                                        className="mt-1 p-2 block w-[30%] h-fit text-base md:text-lg text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    >
+                                        {Object.values(listingStatus).map((status) => (
+                                            <option key={status} value={status}>
+                                            {status.charAt(0).toUpperCase() + status.slice(1)} {/* Capitalize */}
+                                            </option>
+                                        ))}
+                                    </select>
 
-                                <LoadingSpinnerBlock customStyle="mx-2 size-9" isOpen={isListingStatusSyncing}/>
-                            </div>
+                                    <LoadingSpinnerBlock customStyle="mx-2 size-9" isOpen={isListingStatusSyncing}/>
+                                </div>
                             )}
                         </div>
                     </div>

@@ -1,26 +1,27 @@
-import './index.css';
+import './App.css';
 
-import React, { Suspense, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRoutes} from 'react-router-dom';
 
 import appRoutes from './Routes/AppRoutes';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from './Services/API/ApiInstance';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import Navbar from './Components/StructureComponents/Navbar';
 import Footer from './Components/StructureComponents/FooterSection';
 import LandingPageBar from './Components/StructureComponents/LandingPageBar';
 import LoadingModal from './Components/Modals/LoadingContentModal';
 import NotificationPopUp from './Components/Modals/NotificationPopUpModal';
-import SidebarMenu from './Components/StructureComponents/SIdebarMenu';
-import OpenSidebarButton from './Components/StructureComponents/OpenSidebarButton';
 import ListingDetailModal from './Components/Modals/ListingDetailModal';
 import UploadPhotoModal from './Components/Modals/UploadPhotoModal';
 
+import { UIErrorFallback } from './Components/Modals/UIErrorFallback';
+import SidebarMenu from './Components/StructureComponents/SIdebarMenu';
+
 function App() {
   const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true'; // Ensure it returns a boolean
-  const [isSidebarMenuOpen, setIsSidebarMenuOpen] = useState(false);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -30,22 +31,21 @@ function App() {
           <div className="flex flex-col flex-1 md:flex-row">
             {isAuthenticated && (
               <>
-                <OpenSidebarButton customStyle="absolute top-1 left-2 md:hidden p-3 z-40" onClick={() => setIsSidebarMenuOpen(true)}/>
-                
-                {isSidebarMenuOpen && (
-                    <div className="fixed inset-0 bg-black opacity-50 z-65 backdrop-blur-sm pointer-events-auto" onClick={() => setIsSidebarMenuOpen(false)}></div>
-                )}
-                <SidebarMenu isPopOutSidebar={isSidebarMenuOpen} onClose={() => setIsSidebarMenuOpen(false)}/>
-                
+                <SidebarMenu />
+
                 <NotificationPopUp/>
                 <LoadingModal/>
                 <UploadPhotoModal/>
                 <ListingDetailModal/>
               </>
             )}
-            {useRoutes(appRoutes)}
+            
+            <ErrorBoundary FallbackComponent={UIErrorFallback}>
+              {useRoutes(appRoutes)}
+            </ErrorBoundary>
           </div>
         </div>
+
         {<Footer/>}
       </Suspense>
       <ReactQueryDevtools initialIsOpen={true} />

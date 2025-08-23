@@ -1,5 +1,3 @@
-import React from "react";
-import {lazy} from "react";
 import { RouteObject, Outlet } from "react-router-dom";
 import RequireAuth from "./AuthProvider";
 
@@ -13,6 +11,8 @@ import TradesListPage from "../Pages/TradesListPage";
 import TransactionsListPage from "../Pages/TransactionsListPage";
 
 import ResourceNotFoundPage from "../Pages/ResourceNotFound";
+import { ErrorBoundary } from "react-error-boundary";
+import { UIErrorFallback } from "../Components/Modals/UIErrorFallback";
 
 const appRoutes: RouteObject[] = [
     {
@@ -51,7 +51,8 @@ const appRoutes: RouteObject[] = [
                 path: "/resource_not_found",
                 element: <ResourceNotFoundPage/>,
             }
-        ]
+        ],
+        errorElement: <ErrorBoundary FallbackComponent={UIErrorFallback}/> 
     }
 ];
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { ListingApi } from "../Services/API";
 
 import ListingViewBlock from "../Components/ElementComponents/ListingViewBlock";
@@ -15,8 +14,6 @@ const DashboardPage:React.FC = () => {
     const [currentBannerImageIndex, setCurrentBannerImageIndex] = useState(0);
     const [fade, setFade] = useState(false);
 
-    const [listingsViewList, setListingsViewList] = useState<Listing[]>([]);
-
     const {data: listingsViewListData} = ListingApi.useGetAllListingViewsRQ(
         () => {
 
@@ -27,9 +24,7 @@ const DashboardPage:React.FC = () => {
         true
     );
 
-    useEffect( () => {
-        setListingsViewList(listingsViewListData?.data.data);
-    }, [listingsViewListData]);
+    const listingsViewList = listingsViewListData?.data.data;
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -63,10 +58,10 @@ const DashboardPage:React.FC = () => {
 
                 {/* Listings browse list */}
                 <div className="bg-pink-200 flex flex-1">
-                    <div className="flex-1 max-h-[750px] overflow-y-auto p-3 m-3 box-border rounded-md bg-pink-300">
-                        <ul className="space-y-4">
+                    <div className="flex-1 md:max-h-[750px] overflow-y-auto p-3 m-3 box-border rounded-md bg-pink-300">
+                        <ul className="space-y-4 mb-10">
                             {listingsViewList && listingsViewList.length > 0 && (listingsViewList.map(
-                                (listing) => {
+                                (listing: any) => {
                                     return (
                                         <li>
                                             <ListingViewBlock key={listing.id}
@@ -74,7 +69,7 @@ const DashboardPage:React.FC = () => {
                                                 listingTitle = {listing.title}
                                                 description = {listing.description}
                                                 listingLocation = {listing.location}
-                                                listingPhoto = {listing?.listingPicture ?? "/images/keyboard.jpg"}
+                                                listingPhoto = {listing?.images[0]?.imageURL ?? "/images/keyboard.jpg"}
                                                 bidsCount = {listing?.bidsCount ?? 0}
                                                 bestBidderId={listing?.topBid?.bidder_id ?? 0}
                                                 bestBidUserName = {listing?.topBid?.bidder_name ?? "Demo User"}

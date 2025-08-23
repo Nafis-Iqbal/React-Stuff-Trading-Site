@@ -28,6 +28,8 @@ declare global{
         bidsCount?: number;
         highestBidPrice?: number;
         topBid?: Bid;
+        imageURLs?: string[];
+        images?: Image[];
     }
 
     interface Bid{
@@ -77,11 +79,14 @@ declare global{
         amount: number;
     }
 
-    
-    
-    export interface Comments{
+    interface Comments{
         id: number;
         comment: string;
+    }
+
+    interface Image{
+        id: number;
+        url: string;
     }
     
     interface ApiResponse<T>{
@@ -94,13 +99,5 @@ declare global{
         auth_token: string;
         user_id: number; 
     }
-}
-
-export function isCommentArray(data: any[]): data is Comments[] {
-    return Array.isArray(data) && data.every((item) => 'comment' in item);
-}
-
-export function isTagArray(data: any[]): data is Tag[] {
-    return Array.isArray(data) && data.every((item) => !('comment' in item) && !('progress' in item) && !('project_id' in item && 'priority' in item));
 }
 

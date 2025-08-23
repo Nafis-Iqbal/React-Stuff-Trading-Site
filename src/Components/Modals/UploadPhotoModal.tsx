@@ -51,6 +51,8 @@ const UploadImageModal: React.FC = () => {
 
         try {
             showLoadingContent(true);
+
+            //PHOTO UPLOADED HERE, WITH API CALL TO CLOUDINARY
             const res = await axios.post(
                 process.env.REACT_APP_PIC_HOST ?? "",
                 formData

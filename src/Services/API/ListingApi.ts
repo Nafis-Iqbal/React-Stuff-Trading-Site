@@ -1,6 +1,7 @@
 import api from './ApiInstance';
 import { AxiosResponse } from 'axios';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { List } from 'lodash';
 
 // Create Listing
 const createListing = async (listing: Listing): Promise<AxiosResponse> => {
@@ -26,7 +27,7 @@ export const useCreateListingRQ = (onSuccessFn: (data: any) => void, onErrorFn: 
 };
 
 // Update Listing
-const updateListing = async (listing: Listing): Promise<AxiosResponse> => {
+const updateListing = async (listing: {id: number} & Partial<Omit<Listing, 'id'>>): Promise<AxiosResponse> => {
     try {
         console.log(listing);
         const response = await api.put<ApiResponse<string>>("listings/update", {...listing});
@@ -51,9 +52,9 @@ export const useUpdateListingRQ = (onSuccessFn: (data: any) => void, onErrorFn: 
 };
 
 // Delete Listing
-const deleteListing = async (listingId: number): Promise<AxiosResponse> => {
+const deleteListing = async (id: number): Promise<AxiosResponse> => {
     try {
-        const response = await api.delete<ApiResponse<string>>(`listings/delete?id=${listingId}`);
+        const response = await api.delete<ApiResponse<string>>(`listings/delete?id=${id}`);
         return response;
     } catch (error) {
         console.log('Error deleting listing');
@@ -73,6 +74,24 @@ export const useDeleteListingRQ = (onSuccessFn: () => void, onErrorFn: () => voi
     });
 };
 
+export async function deleteListingImages(id: number, imageIds: number[]) {
+  const response = await api.post<ApiResponse<string>>(`/listings/${id}/images`, imageIds);
+
+  return response;
+}
+
+export function useDeleteListingImagesRQ(onSuccessFn: (ApiResponse: any) => void, onErrorFn: () => void) {
+    return useMutation({
+        mutationFn: ({id, imageIds} : {id: number, imageIds: number[]}) => deleteListingImages(id, imageIds),
+        onSuccess: (data) => {
+            onSuccessFn(data);
+        },
+        onError: () => {
+            onErrorFn();
+        }
+    });
+}
+
 // Get Listing Detail
 const getListingDetail = async (id: number): Promise<AxiosResponse> => {
     try {
@@ -84,18 +103,12 @@ const getListingDetail = async (id: number): Promise<AxiosResponse> => {
     }
 };
 
-export const useGetListingDetailRQ = (id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
+export const useGetListingDetailRQ = (id: number, enabled: boolean) => {
     return useQuery({
         queryKey: ["listing_detail", id],
         queryFn: () => getListingDetail(id as number),
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
-        onSuccess: () => {
-            onSuccessFn();
-        },
-        onError: () => {
-            onErrorFn();
-        },
         enabled
     });
 };

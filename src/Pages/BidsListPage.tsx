@@ -37,7 +37,12 @@ const BidsListPage: React.FC = () => {
                         bidList.map((bid) => {
                             return (
                                 <li>
-                                    <BidInfoBlock listingName={bid.listing_name ?? "Fix listing name"} description={bid.description} bidPrice={bid.amount} onViewListingClick={() => showListingDetail(bid.listing_id)}/>
+                                    <BidInfoBlock 
+                                        listingName={bid.listing_name ?? "Fix listing name"} 
+                                        description={bid.description} 
+                                        bidPrice={bid.amount} 
+                                        onViewListingClick={() => showListingDetail(bid.listing_id)}
+                                    />
                                 </li>
                             );
                         })

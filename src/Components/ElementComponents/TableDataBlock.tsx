@@ -1,4 +1,4 @@
-import { isTagArray, isCommentArray } from "../../Types&Enums/CommonTypes";
+import { isTagArray, isCommentArray } from "../../Utilities/Utilities"
 
 import LoadingSpinner from "../PlaceholderComponents/LoadingAnimationDiv";
 import TagListRow from "./TagListRow";

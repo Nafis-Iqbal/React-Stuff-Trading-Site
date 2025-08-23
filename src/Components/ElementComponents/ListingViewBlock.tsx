@@ -40,7 +40,13 @@ const ListingViewBlock: React.FC<ListingViewProps> = ({
             <p className="p-2 ml-1 text-gray-600 text-2xl font-semibold">{listingTitle}</p>
 
             <div className="flex flex-col md:flex-row w-full">
-                <img className="h-[200px] md:h-[300px] w-[100%] md:w-[65%] mr-0 mb-3 md:mr-3 md:mb-0 rounded-sm" src={listingPhoto} alt="Listing"></img>
+                <div className="relative h-[200px] md:h-[300px] w-[100%] md:w-[65%] mr-0 mb-3 md:mr-3 md:mb-0 rounded-sm" >
+                    <img
+                        src={listingPhoto}
+                        alt="Listing"
+                        className="w-full h-full object-cover rounded-sm"
+                    />
+                </div>
 
                 <div className="flex flex-col w-[100%] md:w-[35%] py-2 md:pt-8 px-2 space-y-2 bg-pink-200 rounded-sm">
                     <p className="text-gray-600 text-lg md:text-xl">{description}</p>

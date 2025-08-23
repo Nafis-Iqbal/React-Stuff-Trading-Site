@@ -7,8 +7,9 @@ import { BidApi, TradeApi } from "../../Services/API";
 import { queryClient } from "../../Services/API/ApiInstance";
 import { isNumber } from "../../Utilities/Utilities";
 
-import LoadingSpinnerBlock from "../PlaceholderComponents/LoadingSpinnerBlock";
+import ConfirmationModal from "../Modals/ConfirmationModal";
 import { setListingDetailViewVisibility } from "../../GlobalStateContext/CommonPopUpSlice";
+import { listingStatus } from "../../Types&Enums/Enums";
 
 interface BidViewProps{
     id: number;
@@ -16,6 +17,7 @@ interface BidViewProps{
     amount: number;
     listing_id: number;
     listing_user_id: number;
+    listing_status: listingStatus;
     bidder_id: number;
     own_user_id: number;
     bidder_name: string;
@@ -28,6 +30,7 @@ const BidViewBlock: React.FC<BidViewProps> = ({
     amount,
     listing_id,
     listing_user_id,
+    listing_status,
     bidder_id,
     own_user_id,
     bidder_name,
@@ -38,6 +41,7 @@ const BidViewBlock: React.FC<BidViewProps> = ({
 
     const {showLoadingContent, openNotificationPopUpMessage} = useGlobalUI();
 
+    const [isTradeConfirmationVisible, setIsTradeConfirmationVisible] = useState<boolean>(false);
     const [bidFormData, setBidFormData] = useState<Bid>({
         id,
         listing_id,
@@ -69,6 +73,8 @@ const BidViewBlock: React.FC<BidViewProps> = ({
             if(responseData.data.status === "success")
             {
                 queryClient.invalidateQueries(["user_trades", own_user_id]);
+                queryClient.invalidateQueries(["listing_detail", listing_id]);
+
                 openNotificationPopUpMessage("Trade initiated successfully.");
                 showLoadingContent(false);
             }
@@ -121,6 +127,7 @@ const BidViewBlock: React.FC<BidViewProps> = ({
         });
 
         showLoadingContent(true);
+        setIsTradeConfirmationVisible(false);
     }
 
     const onTradeCreateFailure = () => {
@@ -130,6 +137,13 @@ const BidViewBlock: React.FC<BidViewProps> = ({
 
     return(
         <div className="flex flex-col p-1 bg-pink-100 rounded-sm">
+            <ConfirmationModal
+                isVisible={isTradeConfirmationVisible}
+                message="Are you sure you want to trade here?"
+                onConfirm={onTradeWithUser}
+                onCancel={() => setIsTradeConfirmationVisible(false)}
+            />
+
             <div className="flex space-x-1">
                 <div className="flex items-center w-[65%] md:w-[70%]">
                     <p className="m-1 text-xl md:text-2xl text-red-500 font-bold">{amount}</p>
@@ -179,13 +193,25 @@ const BidViewBlock: React.FC<BidViewProps> = ({
                         />
                     </div>
 
-                    <button type="submit" className="w-[30%] max-h-[40px] p-2 my-1 mr-1 text-sm md:text-base text-white bg-emerald-400 hover:bg-emerald-500 rounded-sm">Update Bid</button>
+                    <button 
+                        type="submit" 
+                        className="w-[30%] max-h-[40px] p-2 my-1 mr-1 text-sm md:text-base text-white bg-emerald-400 hover:bg-emerald-500 rounded-sm
+                        disabled:bg-gray-400 disabled:cursor-not-allowed" disabled={listing_status === listingStatus.available ? false : true}
+                    >
+                            Update Bid
+                    </button>
                 </form>
             )}
 
             {(own_user_id === listing_user_id) && (
                 <div className="flex justify-end">
-                    <button onClick={() => onTradeWithUser()} className="p-2 m-1 text-white bg-emerald-400 hover:bg-emerald-500">Trade here.</button>
+                    <button 
+                        onClick={() => setIsTradeConfirmationVisible(true)} 
+                        className="p-2 m-1 text-white bg-emerald-400 hover:bg-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        disabled={listing_status === listingStatus.available ? false : true}
+                    >
+                        Trade here.
+                    </button>
                 </div>
             )}
         </div>

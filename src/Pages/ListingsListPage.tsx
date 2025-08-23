@@ -62,18 +62,20 @@ const ListingsListPage:React.FC = () => {
         <div className="flex flex-1 flex-col md:flex-row bg-pink-200 md:bg-pink-100 text-white min-h-screen">
             <div className="md:hidden min-h-[30px] bg-pink-200"></div>
 
-            {ownUserData?.data.data && (ownUserData.data.data.id === parsedUserId) && (<CreateListingModal 
-                isOpen={isCreateListingOpen} 
-                user_id={parsedUserId}
-                onClose={() => setIsCreateListingOpen(false)}
-                onSubmit={onCreateListingSubmit}
-                onSuccess={onCreateListingSuccess}
-                onFailure={onCreateListingFailure}
-            />)}
+            {ownUserData?.data.data && (ownUserData.data.data.id === parsedUserId) && 
+                <CreateListingModal 
+                    isOpen={isCreateListingOpen} 
+                    user_id={parsedUserId}
+                    onClose={() => setIsCreateListingOpen(false)}
+                    onSubmit={onCreateListingSubmit}
+                    onSuccess={onCreateListingSuccess}
+                    onFailure={onCreateListingFailure}
+                />
+            }
 
             <main className="flex flex-col w-[100%] md:w-[60%] h-full bg-pink-200">
                 <div className="flex justify-between items-center">
-                    <h1 className="p-3 md:p-4 ml-2 mt-2 bg-pink-300 text-2xl md:text-3xl text-white font-semibold rounded-sm">Listings</h1>
+                    <h1 className="p-3 md:p-4 ml-2 mt-2 text-3xl md:text-4xl text-pink-600 font-semibold rounded-sm">Listings</h1>
 
                     {ownUserData?.data.data && (ownUserData.data.data.id === parsedUserId) && (<div className="p-2 md:p-3 mr-2 bg-white text-lg md:text-xl text-emerald-700 border-4 border-emerald-500 font-semibold rounded-md">Own Listings</div>)}
                 </div>
@@ -89,11 +91,13 @@ const ListingsListPage:React.FC = () => {
                         (listing) => {
                             return (
                                 <li>
-                                    <ListingInfoBlock key={listing.id} name={listing.title} bidsCount={listing.bidsCount ?? 0} highestBidPrice={listing.highestBidPrice ?? -1} onClick={
-                                        () => {
-                                            showListingDetail(listing.id);
-                                        }
-                                    }/>
+                                    <ListingInfoBlock 
+                                        key={listing.id} 
+                                        name={listing.title} 
+                                        bidsCount={listing.bidsCount ?? 0} 
+                                        highestBidPrice={listing.highestBidPrice ?? -1} 
+                                        onClick={() => showListingDetail(listing.id)}
+                                    />
                                 </li>
                             );
                         }

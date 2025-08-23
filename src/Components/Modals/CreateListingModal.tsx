@@ -4,6 +4,8 @@ import { isNumber } from "../../Utilities/Utilities";
 import { listingStatus } from "../../Types&Enums/Enums";
 import { ListingApi } from "../../Services/API";
 import { queryClient } from "../../Services/API/ApiInstance";
+import { ImageUploadModule } from "../ModularComponents/ImageUploadModule";
+import { update } from "lodash";
 
 interface CreateListingModalProps{
     user_id: number;
@@ -14,18 +16,21 @@ interface CreateListingModalProps{
     onFailure: () => void;
 }
 
+const defaultListingForm: Listing = {
+    id: 0,
+    user_id: 0,
+    title: '',
+    description: '',
+    location: '',
+    exchange_items: '',
+    price: 0,
+    status: listingStatus.available
+};
+
 const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen, onClose, onSubmit, onSuccess, onFailure}) => {
+    const [newListingId, setNewListingId] = useState<number | null>(null);
     
-    const[formData, setFormData] = useState<Listing>({
-        id: 0,
-        user_id: (user_id ?? 0),
-        title: '',
-        description: '',
-        location: '',
-        exchange_items: '',
-        price: 0,
-        status: listingStatus.available
-    });
+    const[formData, setFormData] = useState<Listing>({...defaultListingForm, user_id});
 
     const {mutate: createListingMutate} = ListingApi.useCreateListingRQ(
         (responseData) => {
@@ -34,16 +39,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                 onSuccess(formData);
                 queryClient.invalidateQueries(["listings"]);
 
-                setFormData({
-                    id: 0,
-                    user_id: (user_id ?? 0),
-                    title: '',
-                    description: '',
-                    location: '',
-                    exchange_items: '',
-                    price: 0,
-                    status: listingStatus.available
-                });
+                setFormData(defaultListingForm);
             }
             else{
                 onFailure();
@@ -52,11 +48,42 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
         () => {
             onFailure();
         }
-    ); 
+    );
 
-    useEffect(() => {
+    const {mutate: updateListingImagesMutate} = ListingApi.useUpdateListingRQ(
+        (responseData) => {
+            if(responseData.data.status === "success")
+            {
+                onSuccess(formData);
+                queryClient.invalidateQueries(["listings"]);
 
-    }, []);
+                setNewListingId(responseData.data.data.id);
+                setFormData(defaultListingForm);
+            }
+            else{
+                onFailure();
+            }
+        },
+        () => {
+            onFailure();
+        }
+    );
+
+    const {mutate: deleteListingImagesMutate} = ListingApi.useDeleteListingImagesRQ(
+        (responseData) => {
+            if(responseData.data.status === "success")
+            {
+                onSuccess(formData);
+                queryClient.invalidateQueries(["listings"]);
+            }
+            else{
+                onFailure();
+            }
+        },
+        () => {
+            onFailure();
+        }
+    );
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         let {name, value} = e.target;
@@ -69,8 +96,8 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
         }
         
         setFormData((prevData) => ({
-        ...prevData,
-        [name]: name === 'end_date' ? new Date(value) : value,
+            ...prevData,
+            [name]: name === 'end_date' ? new Date(value) : value,
         }));
     };
 
@@ -84,16 +111,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
     }
 
     const handleClose = () => {
-        setFormData({
-            id: 0,
-            user_id: (user_id ?? 0),
-            title: '',
-            description: '',
-            location: '',
-            exchange_items: '',
-            price: 0,
-            status: listingStatus.available
-        });
+        setFormData(defaultListingForm);
 
         onClose();
     }
@@ -105,7 +123,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
             <div className="bg-pink-200 rounded-lg p-6 shadow-lg w-full max-w-lg">
                 <h2 className="text-2xl text-pink-800 font-semibold mb-4">Create Listing</h2>
 
-                <form onSubmit={(e) => handleSubmit(e)}> {/* Delegate form submission to parent */}
+                <form className="flex flex-col space-y-4" onSubmit={(e) => handleSubmit(e)}> {/* Delegate form submission to parent */}
                     {/* Listing Title */}
                     <div className="mb-4">
                         <label htmlFor="title" className="block mb-3 text-base md:text-lg font-medium text-gray-700">
@@ -123,7 +141,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                     </div>
 
                     {/* Listing Description */}
-                    <div className="mb-4">
+                    <div className="">
                         <label htmlFor="description" className="block mb-3 text-base md:text-lg font-medium text-gray-700">
                             Listing Description
                         </label>
@@ -139,7 +157,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                     </div>
 
                     {/* Listing Location */}
-                    <div className="mb-4">
+                    <div className="">
                         <label htmlFor="location" className="block mb-3 text-base md:text-lg font-medium text-gray-700">
                             Location
                         </label>
@@ -155,7 +173,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                     </div>
 
                     {/* Listing Exchange Items */}
-                    <div className="mb-4">
+                    <div className="">
                         <label htmlFor="exchange_items" className="block mb-3 text-base md:text-lg font-medium text-gray-700">
                             Exchange Items
                         </label>
@@ -171,7 +189,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                     </div>
 
                     {/* Listing Price */}
-                    <div className="mb-4">
+                    <div className="">
                         <label htmlFor="price" className="block mb-3 text-base md:text-lg font-medium text-gray-700">
                             Price
                         </label>
@@ -185,6 +203,18 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                             className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                     </div>
+
+                    <ImageUploadModule
+                        MAX_FILES={3}
+                        imageUploadMode="create"
+                        actionTrigger={true}
+                        resourceId={newListingId}
+                        resourceLabel="Upload Listing Images"
+                        resourceLabelStyle="text-base md:text-lg text-pink-600 font-medium"
+                        pic_url_Builder={(resourceId) => `stuff-trader/listings/${resourceId}/images`}
+                        updateResourceMutation={({ id, imageURLs } : {id: number, imageURLs: string[]}) => updateListingImagesMutate({ id, imageURLs })}
+                        deleteResourceMutation={({ id, imageIds } : {id: number, imageIds: number[]}) => deleteListingImagesMutate({ id, imageIds }) }
+                    />
 
                     {/* Submit Button */}
                     <div className="flex justify-between">

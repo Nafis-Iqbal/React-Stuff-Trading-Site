@@ -1,5 +1,4 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuthSelector } from "../Hooks/StateHooks"; // Update path as needed
 import React from "react";
 
 const RequireAuth = ({ children }: { children: React.JSX.Element }) => {

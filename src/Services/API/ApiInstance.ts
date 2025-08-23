@@ -1,12 +1,13 @@
 import axios from 'axios';
-import store from '../../GlobalStateContext/GlobalStateStore';
 import { QueryClient } from '@tanstack/react-query';
+import store from '../../GlobalStateContext/GlobalStateStore';
+import { logout } from '../../GlobalStateContext/AuthSlice';
 
 export const queryClient = new QueryClient();
 
-const apiBaseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
+//const apiBaseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
 //const apiBaseURL = 'https://express-stuff-trading-site-62d07ba71a1f.herokuapp.com/api';
-//const apiBaseURL = 'http://localhost:5000/api';
+const apiBaseURL = 'http://localhost:5000/api';
 
 // Create Axios instance with default config
 const api = axios.create({
@@ -34,6 +35,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      store.dispatch(logout());
+      window.location.href = '/'; // Redirect to login
+    }
     console.error('API Error:', error.response?.data?.message || error.message);
     return Promise.reject(error);
   }
