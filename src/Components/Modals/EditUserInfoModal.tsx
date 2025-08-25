@@ -21,22 +21,18 @@ const EditUserModal: React.FC<EditUserInfoModalProps> = ({
                 onSuccess(formData);
                 queryClient.invalidateQueries(["user"]);
 
-                setFormData(defaultUserInfo);
+                //setFormData(defaultUserInfo);
             }
             else{
-                setFormData(defaultUserInfo);
+                //setFormData(defaultUserInfo);
                 onFailure();
             }
         },
         () => {
-            setFormData(defaultUserInfo);
+            //setFormData(defaultUserInfo);
             onFailure();
         }
     );
-
-    useEffect(() => {
-        setFormData(defaultUserInfo);
-    }, [defaultUserInfo]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         let{name, value} = e.target;
@@ -49,6 +45,7 @@ const EditUserModal: React.FC<EditUserInfoModalProps> = ({
             ...prevData,
             [name]: value,
         }));
+        console.log(formData);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -59,7 +56,6 @@ const EditUserModal: React.FC<EditUserInfoModalProps> = ({
             return;
         }
 
-        console.log(formData);
         onSubmit();
         
         updateUserInfoMutate(formData);
@@ -88,10 +84,10 @@ const EditUserModal: React.FC<EditUserInfoModalProps> = ({
               <input
                 type="text"
                 id="name"
-                name="name"
+                name="user_name"
                 value={formData.user_name}
                 onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="mt-1 block w-full px-4 py-2 text-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -106,7 +102,7 @@ const EditUserModal: React.FC<EditUserInfoModalProps> = ({
                 name="phone_number"
                 value={formData.phone_number}
                 onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="mt-1 block w-full px-4 py-2 text-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 maxLength={11}
               />
             </div>

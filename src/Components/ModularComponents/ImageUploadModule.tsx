@@ -177,7 +177,7 @@ export const ImageUploadModule = ({
                 </label>
 
                 {/* Show Selected File Count */}
-                <span className="text-sm text-gray-300">
+                <span className="text-sm p-1 bg-gray-300 text-gray-700">
                     {pendingFiles.length + resourceImages.length} / {MAX_FILES} images selected
                 </span>
 

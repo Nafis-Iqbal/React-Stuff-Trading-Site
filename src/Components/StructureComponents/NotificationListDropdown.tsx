@@ -11,14 +11,6 @@ const NotificationListDropdownBase = forwardRef<HTMLDivElement, NotificationMenu
           <div className='flex justify-between items-center space-x-4'>
             <button className='p-2 border-b-2 border-pink-300'>This is a notification. Feature not available</button>
           </div>
-          
-          <div className='flex justify-between items-center space-x-4'>
-            <button className='p-2 border-b-2 border-pink-300'>This is a notification. Feature not available</button>
-          </div>
-
-          <div className='flex justify-between items-center space-x-4'>
-            <button className='p-2 border-b-2 border-pink-300'>This is a notification. Feature not available</button>
-          </div>
         </div>
     );
 });

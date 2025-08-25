@@ -57,13 +57,19 @@ const SidebarMenu = forwardRef<HTMLDivElement, SidebarMenuProps>(({isPopOutSideb
             
             <ul className="flex flex-col space-y-1">
                 <li>
+                    <button 
+                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 
+                        disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        onClick={() => onNavigate(`/listings/${ownUserData?.data.data.id ?? 0}?createListing=true`)}
+                    >
+                        Create New Listing
+                    </button>
+                </li>
+                <li>
                     <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Show Popular Listings</button>
                 </li>
                 <li>
                     <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Show Nearby Listings</button>
-                </li>
-                <li>
-                    <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Create New Listing</button>
                 </li>
                 <li>
                     <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Show Pending Trades</button>

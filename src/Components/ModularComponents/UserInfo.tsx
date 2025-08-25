@@ -17,12 +17,6 @@ const UserInfoModule = ({userId, profilePicture, customStyle} : {userId: number,
 
   const {data: userData} = UserApi.useGetUserDetailRQ(
     userId,
-    () => {
-
-    },
-    () => {
-
-    },
     (userId > 0)
   );
 
@@ -50,7 +44,6 @@ const UserInfoModule = ({userId, profilePicture, customStyle} : {userId: number,
   useEffect(() => {
     if(userData?.data.data && ownUserData?.data.data && (checkIfSubstring(userData?.data.data.user_name ?? '', "Guest") || ownUserData?.data.data.id !== userId)){
       setCanEditInfo(false);
-      console.log(userData?.data.data, ownUserData?.data.data)
     }
   },[userData, ownUserData, userId]);
 

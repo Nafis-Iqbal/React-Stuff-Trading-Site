@@ -7,7 +7,7 @@ export const createRating = async (data: {
     trade_id: number;
     rating_taker_id: number;
     rating: number;
-    comment: string;
+    comment?: string;
 }): Promise<AxiosResponse> => {
     try {
         const response = await api.post<ApiResponse<string>>("ratings/create", {

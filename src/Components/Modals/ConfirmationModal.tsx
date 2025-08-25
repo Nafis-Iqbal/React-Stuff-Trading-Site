@@ -6,10 +6,10 @@ interface ConfirmationModalProps {
     message: string;
     onConfirm: () => void;
     onCancel: () => void;
+    customMessage?: React.ReactNode;
 }
 
-const ConfirmationModal = ({ isVisible, message, onConfirm, onCancel } : ConfirmationModalProps) => {
-
+const ConfirmationModal = ({ isVisible, message, onConfirm, onCancel, customMessage } : ConfirmationModalProps) => {
     if(!isVisible) return <></>;
 
     return ReactDOM.createPortal(
@@ -25,7 +25,7 @@ const ConfirmationModal = ({ isVisible, message, onConfirm, onCancel } : Confirm
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
-                <p className="text-lg text-white font-semibold">{message}</p>
+                <p className="text-lg text-white font-semibold">{typeof customMessage !== 'undefined' ? customMessage : message}</p>
                 <div className="mt-6 flex justify-center space-x-4">
                     <button
                         className="px-4 py-2 bg-emerald-400 hover:bg-emerald-500 text-white rounded"

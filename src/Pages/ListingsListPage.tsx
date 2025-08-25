@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 import { UserApi, ListingApi } from "../Services/API";
 import { useGlobalUI } from "../Hooks/StateHooks/GlobalStateHooks";
@@ -14,9 +14,22 @@ const ListingsListPage:React.FC = () => {
     const {showListingDetail, showLoadingContent, openNotificationPopUpMessage} = useGlobalUI();
 
     const { userId } = useParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const parsedUserId = Number(userId);
 
     const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
+
+    // Check if the page was opened with createListing=true query parameter
+    useEffect(() => {
+        if (searchParams.get('createListing') === 'true') {
+            setIsCreateListingOpen(true);
+            // Remove the query parameter from URL to clean it up
+            setSearchParams((params) => {
+                params.delete('createListing');
+                return params;
+            });
+        }
+    }, [searchParams, setSearchParams]);
 
     const {data: listingsListData} = ListingApi.useGetUserListingsRQ(
         parsedUserId,

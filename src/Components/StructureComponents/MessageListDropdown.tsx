@@ -18,33 +18,6 @@ const MessageListDropdownBase = forwardRef<HTMLDivElement, MessageListDropdownPr
             
             <button className='p-2 border-b-2 border-pink-300'>Feature not available</button>
           </div>
-          
-          <div className='flex justify-between space-x-4'>
-            <div className='flex space-x-5 items-center'>
-              <img src="public/user1.png" alt="User1" className='size-[60px]'></img>
-              <p>User 1</p>
-            </div>
-            
-            <button className='p-2 border-b-2 border-pink-300'>Feature not available</button>
-          </div>
-
-          <div className='flex justify-between space-x-4'>
-            <div className='flex space-x-5 items-center'>
-              <img src="public/user1.png" alt="User1" className='size-[60px]'></img>
-              <p>User 1</p>
-            </div>
-            
-            <button className='p-2 border-b-2 border-pink-300'>Feature not available</button>
-          </div>
-
-          <div className='flex justify-between space-x-4'>
-            <div className='flex space-x-5 items-center'>
-              <img src="public/user1.png" alt="User1" className='size-[60px]'></img>
-              <p>User 1</p>
-            </div>
-            
-            <button className='p-2 border-b-2 border-pink-300'>Feature not available</button>
-          </div>
         </div>
     );
 });

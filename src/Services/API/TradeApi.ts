@@ -1,6 +1,7 @@
 import api from './ApiInstance';
 import { AxiosResponse } from 'axios';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { tradeStatus } from '../../Types&Enums/Enums';
 
 export const createTrade = async (data: { listing_id: number; buyer_id: number; seller_id: number; amount: number }): Promise<AxiosResponse> => {
     try {
@@ -28,7 +29,7 @@ export const useCreateTradeRQ = (onSuccessFn: (ApiResponse: any) => void, onErro
     });
 };
 
-export const updateTrade = async (data: { id: number; amount: number; status: string }): Promise<AxiosResponse> => {
+export const updateTrade = async (data: { id: number; status: tradeStatus }): Promise<AxiosResponse> => {
     try {
         const response = await api.put<ApiResponse<string>>("trades/update", {
             ...data

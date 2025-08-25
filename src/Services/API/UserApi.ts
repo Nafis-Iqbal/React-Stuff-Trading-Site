@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import api from './ApiInstance';
 import { AxiosResponse } from 'axios';
+import { role } from '../../Types&Enums/Enums';
 
 export const createUser = async (user_name: string, email: string, password: string, password_confirmation: string): Promise<AxiosResponse> => {
     try{
@@ -55,9 +56,10 @@ export const useGetAuthenticatedUserRQ = () => {
     });
 }
 
-export const fetchUsers = async (): Promise<AxiosResponse> => {
+export const getAllUsers = async (): Promise<AxiosResponse> => {
     try{
         const response = await api.get<ApiResponse<User[]>>("user/index");
+
         return response;
     }
     catch(error)
@@ -66,6 +68,16 @@ export const fetchUsers = async (): Promise<AxiosResponse> => {
         throw error;
     }
 };
+
+export const useGetAllUsersRQ = () => {
+    return useQuery({
+        queryKey: ["users"],
+        queryFn: getAllUsers,
+        cacheTime: 180 * 1000,
+        staleTime: 180 * 1000,
+        enabled: true
+    });
+}
 
 export const getUserDetail = async (id: number): Promise<AxiosResponse> => {
     try{
@@ -81,16 +93,10 @@ export const getUserDetail = async (id: number): Promise<AxiosResponse> => {
     }
 }
 
-export const useGetUserDetailRQ = (user_id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
+export const useGetUserDetailRQ = (user_id: number, enabled: boolean) => {
     return useQuery({
         queryKey: ["user", user_id],
         queryFn: () => getUserDetail(user_id),
-        onSuccess: () => {
-            onSuccessFn();
-        },
-        onError: () => {
-            onErrorFn();
-        },
         cacheTime: 180 * 1000,
         staleTime: 180 * 1000,
         enabled
@@ -115,6 +121,33 @@ export const updateUser = async (userInfo: User): Promise<AxiosResponse> => {
 export const useUpdateUserRQ = (onSuccessFn?: (ApiResponse: any) => void, onErrorFn?: () => void) => {
     return useMutation({
         mutationFn: updateUser,
+        onSuccess: (data) => {
+            if(onSuccessFn)onSuccessFn(data);
+        },
+        onError: () => {
+            if(onErrorFn)onErrorFn();
+        }
+    });
+}
+
+export const updateUserRole = async (user_id: number, role: role): Promise<AxiosResponse> => {
+    try{
+        const response = await api.put<ApiResponse<Auth>>("user/update/admin-role", {
+            user_id, role
+        });
+
+        return response;
+    }
+    catch(error)
+    {
+        console.log("Error updating user role.");
+        throw error;
+    }
+}
+
+export const useUpdateUserRoleRQ = (onSuccessFn?: (ApiResponse: any) => void, onErrorFn?: () => void) => {
+    return useMutation({
+        mutationFn: ({ user_id, role }: { user_id: number, role: role }) => updateUserRole(user_id, role),
         onSuccess: (data) => {
             if(onSuccessFn)onSuccessFn(data);
         },
