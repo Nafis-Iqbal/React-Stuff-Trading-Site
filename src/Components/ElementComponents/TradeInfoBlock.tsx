@@ -8,6 +8,7 @@ import { tradeStatus } from "../../Types&Enums/Enums";
 import RatingInputModal from "../Modals/RatingInputModal";
 
 interface TradeInfoProp{
+    hideRateButton?: boolean;
     trade_id: number;
     own_user_id: number;
     listingName: string;
@@ -18,9 +19,23 @@ interface TradeInfoProp{
     seller_name: string;
     trade_status: tradeStatus;
     tradePrice?: number;
+    updatedAt?: string;
 }
 
-const TradeInfoBlock: React.FC<TradeInfoProp> = ({trade_id, own_user_id, listing_id, listingName, buyer_name, buyer_id, seller_name, seller_id, trade_status, tradePrice}) => {
+const TradeInfoBlock: React.FC<TradeInfoProp> = ({
+    hideRateButton = false,
+    trade_id, 
+    own_user_id, 
+    listing_id, 
+    listingName, 
+    buyer_name, 
+    buyer_id, 
+    seller_name, 
+    seller_id, 
+    trade_status, 
+    tradePrice,
+    updatedAt
+}) => {
     const navigate = useNavigate();
 
     const [isUserRatingModalOpen, setIsUserRatingModalOpen] = useState(false);
@@ -104,7 +119,7 @@ const TradeInfoBlock: React.FC<TradeInfoProp> = ({trade_id, own_user_id, listing
                 setRating={setAwardedUserRating}
             />
             
-            <div className="flex flex-col md:flex-row md:space-x-2 lg:space-x-3 space-y-1 md:space-y-0">
+            <div className="flex flex-col md:items-center md:flex-row md:space-x-2 lg:space-x-3 space-y-1 md:space-y-0">
                 <p className="text-sm md:text-base self-center lg:text-xl text-white">{(trade_status === tradeStatus.pending) ? ("Trading from") : ("Traded from")}</p>
 
                 <button 
@@ -125,20 +140,26 @@ const TradeInfoBlock: React.FC<TradeInfoProp> = ({trade_id, own_user_id, listing
                 >
                     {(own_user_id === seller_id) ? buyer_name : seller_name}
                 </button>
+
+                <p className="hidden md:block text-gray-600 text-xs md:text-sm ">Updated at:&nbsp;{updatedAt ? new Date(updatedAt).toLocaleDateString() : "N/A"}</p>
             </div>
             
             <div className="flex flex-col items-end space-y-2 md:space-y-3">
                 <p className="text-sm md:text-base lg:text-xl text-red-700 font-medium"><span className="text-white font-normal">Amount:&nbsp;</span>{tradePrice ?? "N/A"}</p>
 
                 {(isTradeCancelled || isTradeCompleted) && 
-                    <div className="flex justify-between md:space-x-2 w-full">
-                        <button 
-                            className="px-2 py-1 md:py-2 md:px-3 text-xs md:text-sm text-white
-                            bg-pink-400 hover:bg-emerald-600 rounded-sm"
-                            onClick={() => setIsUserRatingModalOpen(true)}
-                        >
-                            Rate this user
-                        </button>
+                    <div className="flex justify-between items-center md:space-x-2 w-full">
+                        {!hideRateButton &&
+                            <button 
+                                className="px-2 py-1 md:py-2 md:px-3 text-xs md:text-sm text-white
+                                bg-pink-400 hover:bg-emerald-600 rounded-sm"
+                                onClick={() => setIsUserRatingModalOpen(true)}
+                            >
+                                Rate this user
+                            </button>
+                        }
+
+                        <p className="md:hidden text-gray-600 text-xs md:text-sm ">Updated at:&nbsp;{updatedAt ? new Date(updatedAt).toLocaleDateString() : "N/A"}</p>
 
                         {isTradeCancelled ? 
                             (<div className="px-2 py-1 md:py-2 md:px-3 text-xs md:text-sm font-bold 

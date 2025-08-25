@@ -147,18 +147,12 @@ export const getUserTradeViews = async (user_id: number): Promise<AxiosResponse>
     }
 };
 
-export const useGetUserTradeViewsRQ = (user_id: number, onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
+export const useGetUserTradeViewsRQ = (user_id: number, enabled: boolean) => {
     return useQuery({
         queryFn: () => getUserTradeViews(user_id),
         queryKey: ["user_trades", user_id],
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
-        onSuccess: () => {
-            onSuccessFn();
-        },
-        onError: () => {
-            onErrorFn();
-        },
         enabled
     });
 };
@@ -215,6 +209,28 @@ export const useGetUserOwnedTradesRQ = (onSuccessFn: () => void, onErrorFn: () =
         onError: () => {
             onErrorFn();
         },
+        enabled
+    });
+};
+
+export const getTradesBetweenUsers = async (user_id: number): Promise<AxiosResponse> => {
+    try {
+        const response = await api.get<ApiResponse<Trade[]>>(`trades/user_interaction_history?user_id=${user_id}`);
+
+        return response;
+    }
+    catch (error) {
+        console.log("Error fetching trades between users");
+        throw error;
+    }
+};
+
+export const useGetTradesBetweenUsersRQ = (user_id: number, enabled: boolean) => {
+    return useQuery({
+        queryFn: () => getTradesBetweenUsers(user_id),
+        queryKey: ["tradesBetweenUsers"],
+        staleTime: 30 * 1000,
+        cacheTime: 30 * 1000,
         enabled
     });
 };

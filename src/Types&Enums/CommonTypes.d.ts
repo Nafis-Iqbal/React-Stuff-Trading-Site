@@ -58,6 +58,7 @@ declare global{
         seller_name?: string;
         status: tradeStatus;
         amount: number;
+        updatedAt: Date;
     }
 
     interface Rating{

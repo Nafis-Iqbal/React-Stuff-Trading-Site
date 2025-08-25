@@ -7,6 +7,7 @@ import { useGlobalUI } from '../../Hooks/StateHooks/GlobalStateHooks';
 
 import ProfilePicture from './../StructureComponents/ProfilePicture';
 import EditUserModal from '../../Components/Modals/EditUserInfoModal';
+import { StarRating } from '../ElementComponents/StarRating';
 
 const UserInfoModule = ({userId, profilePicture, customStyle} : {userId: number, profilePicture: string, customStyle?: string}) => {
   const [isEditUserOpen, setIsEditUserOpen] = useState(false);
@@ -50,6 +51,7 @@ const UserInfoModule = ({userId, profilePicture, customStyle} : {userId: number,
   return (
     <div className={`rounded-lg space-y-3 shadow-sm ${customStyle}`}>
       <ProfilePicture own_user_id={ownUserData?.data.data.id} picture_user_id={userId} src={profilePicture} customStyle="mb-2"/>
+      <StarRating className="" rating={userData?.data.data.rating ?? 0} max={5}/>
       
       <h3 className="mb-4 text-2xl font-bold text-pink-900">{userData?.data.data.user_name ?? "Fix user name"}</h3>
 
@@ -71,12 +73,6 @@ const UserInfoModule = ({userId, profilePicture, customStyle} : {userId: number,
             </tr>
           </thead>
           <tbody className='space-y-3'>
-            <tr className='space-x-4'>
-              <td className='text-xl font-semibold'>
-              {makeFirstLetterUppercase(userData?.data.data.usr_name)}
-              </td>
-            </tr>
-
             <tr>
               <td className='text-lg md:text-xl text-gray-700'>
                 <strong>Role:</strong>
