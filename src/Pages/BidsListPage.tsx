@@ -29,11 +29,11 @@ const BidsListPage: React.FC = () => {
 
             <main className="flex flex-col w-[100%] md:w-[60%] h-full bg-pink-200">
                 <div className="flex justify-between items-center">
-                    <h1 className="p-3 md:p-4 ml-2 mt-2 bg-pink-300 text-2xl md:text-3xl text-white font-semibold rounded-sm">Bids</h1>
+                    <h1 className="p-3 md:p-4 ml-2 mt-2 text-3xl md:text-4xl text-pink-600 font-semibold rounded-sm">Bids</h1>
                 </div>
 
                 <ul className="p-3 mx-2 mt-6 mb-2 space-y-3 bg-pink-100 rounded-lg">
-                    {bidList && bidList.length > 0 && (
+                    {bidList && bidList.length > 0 ? (
                         bidList.map((bid) => {
                             return (
                                 <li>
@@ -46,7 +46,10 @@ const BidsListPage: React.FC = () => {
                                 </li>
                             );
                         })
-                    )}
+                    ) : (
+                        <div className="text-pink-700 text-center">You don't have any active bids</div>
+                    )
+                    }
                 </ul>
             </main>
         </div>

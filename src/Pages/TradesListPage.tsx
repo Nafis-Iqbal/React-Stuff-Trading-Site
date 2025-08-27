@@ -27,14 +27,14 @@ const TradesListPage:React.FC = () => {
 
             <main className="flex flex-col w-[100%] md:w-[60%] h-full bg-pink-200">
                 <div className="flex justify-between items-center">
-                    <h1 className="p-3 md:p-4 ml-2 mt-2 bg-pink-300 text-2xl md:text-3xl text-white font-semibold rounded-sm">Trades</h1>
+                    <h1 className="p-3 md:p-4 ml-2 mt-2 text-3xl md:text-4xl text-pink-600 font-semibold rounded-sm">Trades</h1>
 
                     <div className="p-2 md:p-3 mr-2 bg-white text-lg md:text-xl text-emerald-700 border-4 border-emerald-500 font-semibold rounded-md">Own Trades</div>
                 </div>
 
                 <h2 className="ml-4 mt-10 mb-3 text-xl md:text-2xl text-pink-600 font-semibold rounded-sm">Pending Trades</h2>
                 <ul className="p-3 mx-2 mb-2 space-y-3 bg-pink-100 rounded-lg">
-                    {(pendingTrades && pendingTrades.length > 0) && (
+                    {(pendingTrades && pendingTrades.length > 0) ? (
                         pendingTrades.map((trade: Trade) => {
                             return (
                                 <li>
@@ -54,12 +54,14 @@ const TradesListPage:React.FC = () => {
                                 </li>
                             )
                         })
+                    ): (
+                        <div className="text-pink-700 text-center">You don't have any pending trades</div>
                     )}
                 </ul>
                 
                 <h2 className="ml-4 mt-5 mb-3 text-xl md:text-2xl text-pink-600 font-semibold rounded-sm">Completed Trades</h2>
                 <ul className="p-3 mx-2 mb-2 space-y-3 bg-pink-100 rounded-lg">
-                    {(completedTrades && completedTrades.length > 0) && (
+                    {(completedTrades && completedTrades.length > 0) ? (
                         completedTrades.map((trade: Trade) => {
                             return (
                                 <li>
@@ -79,6 +81,8 @@ const TradesListPage:React.FC = () => {
                                 </li>
                             )
                         })
+                    ) : (
+                        <div className="text-pink-700 text-center">You don't have any completed or cancelled trades</div>
                     )}
                 </ul>
             </main>

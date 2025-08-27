@@ -80,7 +80,14 @@ const ListingsListPage:React.FC = () => {
                 <div className="flex justify-between items-center">
                     <h1 className="p-3 md:p-4 ml-2 mt-2 text-3xl md:text-4xl text-pink-600 font-semibold rounded-sm">Listings</h1>
 
-                    {ownUserData?.data.data && (ownUserData.data.data.id === parsedUserId) && (<div className="p-2 md:p-3 mr-2 bg-white text-lg md:text-xl text-emerald-700 border-4 border-emerald-500 font-semibold rounded-md">Own Listings</div>)}
+                    {ownUserData?.data.data && (ownUserData.data.data.id === parsedUserId) && 
+                        <div 
+                            className="p-2 md:p-3 mr-2 bg-white text-lg md:text-xl text-emerald-700 
+                            border-4 border-emerald-500 font-semibold rounded-md"
+                        >
+                            Own Listings
+                        </div>
+                    }
                 </div>
 
                 {/* {isListingDetailOpen && listingDetailData && <ListingDetailModal listingData={listingDetailData} onClose={() => setIsListingDetailOpen(false)}/>} */}
@@ -90,7 +97,7 @@ const ListingsListPage:React.FC = () => {
                 </div>
 
                 <ul className="p-3 mx-2 my-2 space-y-3 bg-pink-100 rounded-lg">
-                    {listingsList && listingsList.length > 0 && (listingsList.map(
+                    {listingsList && listingsList.length > 0 ? (listingsList.map(
                         (listing) => {
                             return (
                                 <li>
@@ -104,7 +111,9 @@ const ListingsListPage:React.FC = () => {
                                 </li>
                             );
                         }
-                    ))}
+                    )) : (
+                        <div className="text-pink-700 text-center">You haven't created any listings yet. Create one to get started</div>
+                    )}
                 </ul>
                 
                 {listingsList && listingsList.length > 5 && (

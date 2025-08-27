@@ -9,6 +9,7 @@ import { setListingDetailViewVisibility } from "../../GlobalStateContext/CommonP
 import { queryClient } from "../../Services/API/ApiInstance";
 import { useGlobalUI } from "../../Hooks/StateHooks/GlobalStateHooks";
 
+import {FaWindowClose} from "react-icons/fa";
 import BidManagerModule from "../ModularComponents/BidManagerModule";
 import LoadingSpinnerBlock from "../PlaceholderComponents/LoadingSpinnerBlock";
 import { ImageViewer } from "../ElementComponents/ImageViewer";
@@ -147,7 +148,12 @@ const ListingDetailModal: React.FC = () => {
                     
                     <h2 className="flex text-center justify-center p-2 my-2 bg-pink-300 text-2xl md:text-3xl text-pink-800 font-semibold rounded-md">{listingDetail?.title}</h2> 
                 
-                    <button className="p-2 m-3  bg-red-500 hover:bg-red-600 text-white rounded-sm" onClick={() => onCloseModal()}>Close</button>
+                    <button 
+                        className="p-2 m-3  bg-red-500 hover:bg-red-600 text-white rounded-sm" 
+                        onClick={() => onCloseModal()}
+                    >
+                        <FaWindowClose/>
+                    </button>
                 </div>         
 
                 <div className="flex flex-col flex-1 md:flex-row w-full h-full">

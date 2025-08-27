@@ -56,6 +56,7 @@ const BidViewBlock: React.FC<BidViewProps> = ({
             {
                 onBidUpdateSuccess(bidFormData);
                 queryClient.invalidateQueries(["listing_bids", listing_id]);
+                queryClient.invalidateQueries(["listing_bids"]);
                 queryClient.invalidateQueries(["userOwnedBids"]);
                 queryClient.invalidateQueries(['listing_views']);
             }

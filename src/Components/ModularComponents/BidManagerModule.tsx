@@ -109,6 +109,8 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
         openNotificationPopUpMessage("Failed to submit bid.");
         setIsSyncingBidSubmission(false);
     };
+
+    const isBidListFetched = bidList && bidList.length > 0;
     
     return (
         <>
@@ -147,7 +149,7 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
                 </div>
 
                 {/* Bids Creation Section*/}
-                {(listingDetailData.user_id !== userData.id) && (
+                {(listingDetailData.user_id !== userData.id && isBidListFetched && !bidList.find(bid => bid.bidder_id === userData.id)) ? (
                     <div className="flex flex-col flex-1 p-1 my-2 max-h-fit justify-start bg-pink-400 rounded-md">
                         <form onSubmit={(e) => handleCreateBidSubmit(e)}>
                             <p className="ml-2 my-2 text-lg md:text-xl font-semibold text-white">Create Bid</p>
@@ -187,6 +189,8 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
                             </div>
                         </form>
                     </div>
+                ) : (
+                    <div className="text-pink-700 text-center p-2 mb-5">You have already made a bid on this listing</div>
                 )}
             </div>
         </>

@@ -87,7 +87,7 @@ const SidebarMenu = forwardRef<HTMLDivElement, SidebarMenuProps>(({isPopOutSideb
                 </li>
             </ul>
 
-            <button className="display:block w-full bg-pink-400 hover:bg-emerald-400 p-3 text-xl text-center text-pink-100" onClick={() => logoutG()}>Logout</button>
+            <button className="display:block w-full bg-emerald-500 hover:bg-emerald-400 p-3 text-xl text-center text-pink-100" onClick={() => logoutG()}>Logout</button>
         </div>
     );
 });
