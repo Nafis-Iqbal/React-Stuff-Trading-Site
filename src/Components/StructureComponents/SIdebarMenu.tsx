@@ -14,7 +14,7 @@ const SidebarMenu = forwardRef<HTMLDivElement, SidebarMenuProps>(({isPopOutSideb
     const navigate = useNavigate();
     const logoutG = useLogout();
 
-    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
+    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ({});
 
     const onNavigate = (path: string) => {
         navigate(path);

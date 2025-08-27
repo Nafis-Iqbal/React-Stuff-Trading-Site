@@ -26,7 +26,7 @@ const initialState: CommonPopupState = {
         isVisible: false,
     },
     listingDetailView: {
-        listingId: 1,
+        listingId: 0,
         isVisible: false,
     },
     photoUploadView: {

@@ -10,7 +10,7 @@ const ProfileInfoDropdownBase = forwardRef<HTMLDivElement, ProfileInfoDropdownPr
     ({ className, userInfo }, ref) => {
         return (
             <div
-                className={`md:hidden absolute top-full right-0 w-[40%] md:w-[20%] bg-pink-200 border-1 border-pink-400 shadow-lg rounded-b-md p-2 z-50 ${className ?? ""}`}
+                className={`md:hidden absolute top-full right-0 max-w-[60%] w-fit md:w-[20%] bg-pink-200 border-1 border-pink-400 shadow-lg rounded-b-md p-2 z-50 ${className ?? ""}`}
                 ref={ref}
             >   
                 <ul className="space-y-2 text-pink-800 text-sm">

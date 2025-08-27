@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
@@ -16,7 +16,7 @@ const ProfilePage: React.FC = () => {
   const { userId } = useParams();
   const parsedUserId = Number(userId);
 
-  const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
+  const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ({});
 
   const {data: userDetailsData} = UserApi.useGetUserDetailRQ(
     parsedUserId,
@@ -75,34 +75,36 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* Interaction History */}
-            <div className='flex flex-col p-2 mx-2 bg-pink-100 rounded-md'>
-              <h1 className='p-2 text-center text-xl md:text-2xl bg-pink-100 text-pink-800 font-semibold'>Trade History with User</h1>
+            {ownUser.id !== parsedUserId &&
+              <div className='flex flex-col p-2 mx-2 bg-pink-100 rounded-md'>
+                <h1 className='p-2 text-center text-xl md:text-2xl bg-pink-100 text-pink-800 font-semibold'>Trade History with User</h1>
 
-              <div className='flex flex-col space-y-2 mb-2'>
-                {(completedTradesBetweenUsers && completedTradesBetweenUsers.length > 0) && (
-                    completedTradesBetweenUsers.map((trade: Trade) => {
-                        return (
-                            <div>
-                                <TradeInfoBlock
-                                    hideRateButton={true} 
-                                    trade_id={trade.id}
-                                    own_user_id={ownUserData?.data.data.id}
-                                    listingName={trade?.listing_title ?? "Fix Listing Name"}
-                                    listing_id={trade.listing_id}
-                                    buyer_id={trade.buyer_id} 
-                                    buyer_name={trade?.buyer_name ?? "Fix Buyer Name"}
-                                    seller_id={trade.seller_id}
-                                    seller_name={trade?.seller_name ?? "Fix Seller Name"}
-                                    trade_status={trade.status}
-                                    tradePrice={trade.amount} 
-                                    updatedAt={trade.updatedAt.toString()}
-                                />
-                            </div>
-                        )
-                    })
-                )}
+                <div className='flex flex-col space-y-2 mb-2'>
+                  {(completedTradesBetweenUsers && completedTradesBetweenUsers.length > 0) && (
+                      completedTradesBetweenUsers.map((trade: Trade) => {
+                          return (
+                              <div>
+                                  <TradeInfoBlock
+                                      hideRateButton={true} 
+                                      trade_id={trade.id}
+                                      own_user_id={ownUserData?.data.data.id}
+                                      listingName={trade?.listing_title ?? "Fix Listing Name"}
+                                      listing_id={trade.listing_id}
+                                      buyer_id={trade.buyer_id} 
+                                      buyer_name={trade?.buyer_name ?? "Fix Buyer Name"}
+                                      seller_id={trade.seller_id}
+                                      seller_name={trade?.seller_name ?? "Fix Seller Name"}
+                                      trade_status={trade.status}
+                                      tradePrice={trade.amount} 
+                                      updatedAt={trade.updatedAt.toString()}
+                                  />
+                              </div>
+                          )
+                      })
+                  )}
+                </div>
               </div>
-            </div>
+            }
 
             {/* Admin Panel */}
             {ownUser.role === role.admin && ownUser.id === parsedUserId && 

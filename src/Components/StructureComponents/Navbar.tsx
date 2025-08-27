@@ -9,7 +9,6 @@ import OpenSidebarButton from './OpenSidebarButton';
 import { ProfileInfoDropdown } from './ProfileMenuDropdown';
 import { NotificationListDropdown } from './NotificationListDropdown';
 import { MessageListDropdown } from './MessageListDropdown';
-import { set } from 'lodash';
 
 const Navbar = ({className} : {className?: string}) => {
   const [isMessageListOpen, setIsMessageListOpen] = useState(false);
@@ -17,7 +16,7 @@ const Navbar = ({className} : {className?: string}) => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isSidebarMenuOpen, setIsSidebarMenuOpen] = useState(false);
 
-  const {data: ownUserDetail} = UserApi.useGetAuthenticatedUserRQ();
+  const {data: ownUserDetail} = UserApi.useGetAuthenticatedUserRQ({});
 
   const onNotificationIconPress = () => {
     setIsNotificationListOpen(!isNotificationListOpen);
@@ -89,7 +88,7 @@ const Navbar = ({className} : {className?: string}) => {
             {/* User Avatar */}
             <div className="flex space-x-4 items-center">
               <img 
-                src={ownUserDetail?.data?.data.profile_picture} 
+                src={ownUserDetail?.data?.data.profile_picture ?? '/images/profile_picture.jpg'} 
                 alt="User Avatar" 
                 className="w-8 h-8 cursor-pointer rounded-full" 
                 onClick={() => onProfileIconPress()}

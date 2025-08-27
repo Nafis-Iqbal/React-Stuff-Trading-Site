@@ -87,7 +87,7 @@ declare global{
 
     interface Image{
         id: number;
-        url: string;
+        imageURL: string;
     }
     
     interface ApiResponse<T>{

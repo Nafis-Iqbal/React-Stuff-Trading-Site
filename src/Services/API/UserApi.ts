@@ -33,7 +33,7 @@ export const loginUser = async (email: string, password: string): Promise<AxiosR
     }
 }
 
-export const getAuthenticatedUser = async (numbe: number): Promise<AxiosResponse> => {
+export const getAuthenticatedUser = async (): Promise<AxiosResponse> => {
     try{
         const response = await api.get<ApiResponse<User>>("user/own_detail");
         
@@ -46,13 +46,13 @@ export const getAuthenticatedUser = async (numbe: number): Promise<AxiosResponse
     }
 }
 
-export const useGetAuthenticatedUserRQ = () => {
+export const useGetAuthenticatedUserRQ = ({enabled = true}: {enabled?: boolean}) => {
     return useQuery({
         queryKey: ["user"],
-        queryFn: () => getAuthenticatedUser(1),
+        queryFn: () => getAuthenticatedUser(),
         cacheTime: 180 * 1000,
         staleTime: 180 * 1000,
-        enabled: true
+        enabled
     });
 }
 
@@ -103,7 +103,7 @@ export const useGetUserDetailRQ = (user_id: number, enabled: boolean) => {
     });
 }
 
-export const updateUser = async (userInfo: User): Promise<AxiosResponse> => {
+export const updateUser = async (userInfo: {id: number} & Partial<Omit<User, 'id'>>): Promise<AxiosResponse> => {
     try{
         const response = await api.put<ApiResponse<Auth>>("user/update", {
             ...userInfo

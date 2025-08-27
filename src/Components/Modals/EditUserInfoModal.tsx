@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { queryClient } from "../../Services/API/ApiInstance";
 import { useUpdateUserRQ } from "../../Services/API/UserApi";
@@ -13,7 +13,7 @@ const EditUserModal: React.FC<EditUserInfoModalProps> = ({
     onFailure
 }) => {
 
-    const[formData, setFormData] = useState<User>(defaultUserInfo);
+    const[formData, setFormData] = useState<{id: number} &  Partial<Omit<User, 'id'>>>(defaultUserInfo);
 
     const {mutate: updateUserInfoMutate} = useUpdateUserRQ(
         (responseData) => {
@@ -38,7 +38,7 @@ const EditUserModal: React.FC<EditUserInfoModalProps> = ({
         let{name, value} = e.target;
 
         if(name === "phone_number" && !isNumber(value)){
-            value = formData.phone_number;
+            value = formData.phone_number ?? "01900000000";
         }
        
         setFormData((prevData) => ({

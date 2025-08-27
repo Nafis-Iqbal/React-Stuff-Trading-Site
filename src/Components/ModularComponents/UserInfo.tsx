@@ -14,7 +14,7 @@ const UserInfoModule = ({userId, profilePicture, customStyle} : {userId: number,
   const [canEditInfo, setCanEditInfo] = useState(true); 
   const {showLoadingContent, openNotificationPopUpMessage} = useGlobalUI();
 
-  const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
+  const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ({});
 
   const {data: userData} = UserApi.useGetUserDetailRQ(
     userId,
@@ -29,7 +29,7 @@ const UserInfoModule = ({userId, profilePicture, customStyle} : {userId: number,
     showLoadingContent(true);
   }
 
-  const onEditUserSuccess = (formData: User) => {
+  const onEditUserSuccess = (formData: {id: number} & Partial<Omit<User, 'id'>>) => {
     showLoadingContent(false);
 
     openNotificationPopUpMessage("User info updated successfully!");

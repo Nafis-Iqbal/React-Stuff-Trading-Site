@@ -5,9 +5,9 @@ import { logout } from '../../GlobalStateContext/AuthSlice';
 
 export const queryClient = new QueryClient();
 
-//const apiBaseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
-//const apiBaseURL = 'https://express-stuff-trading-site-62d07ba71a1f.herokuapp.com/api';
-const apiBaseURL = 'http://localhost:5000/api';
+const apiBaseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
+//const apiBaseURL = 'https://express-stuff-trader-site-a0aa93eb2f7d.herokuapp.com/api';
+//const apiBaseURL = 'http://localhost:5000/api';
 
 // Create Axios instance with default config
 const api = axios.create({

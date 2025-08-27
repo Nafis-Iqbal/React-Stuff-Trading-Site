@@ -74,8 +74,8 @@ export const useDeleteListingRQ = (onSuccessFn: () => void, onErrorFn: () => voi
     });
 };
 
-export async function deleteListingImages(id: number, imageIds: number[]) {
-  const response = await api.post<ApiResponse<string>>(`/listings/${id}/images`, imageIds);
+export async function deleteListingImages(listing_id: number, imageIds: number[]) {
+  const response = await api.post<ApiResponse<string>>(`/listings/delete_images`, { listing_id, imageIds });
 
   return response;
 }

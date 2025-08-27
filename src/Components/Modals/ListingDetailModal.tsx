@@ -40,13 +40,20 @@ const ListingDetailModal: React.FC = () => {
     const [isEditingListingImages, setIsEditingListingImages] = useState(false);
 
     const [isListingStatusSyncing, setIsListingStatusSyncing] = useState(false);
-    
-    const {data: userData} = UserApi.useGetAuthenticatedUserRQ();
+
+    const {data: userData} = UserApi.useGetAuthenticatedUserRQ({});
 
     const {data: listingDetailData} = ListingApi.useGetListingDetailRQ(
         listingId,
         (listingId > 0)
     );
+
+    // Update listingFormData when listing detail data is fetched
+    useEffect(() => {
+        if (listingDetailData?.data?.data) {
+            setListingFormData(listingDetailData.data.data);
+        }
+    }, [listingDetailData]);
 
     const {mutate: updateListingMutate} = ListingApi.useUpdateListingRQ(
         (responseData) => {
@@ -57,16 +64,25 @@ const ListingDetailModal: React.FC = () => {
                 queryClient.invalidateQueries(["listings"]);
                 queryClient.invalidateQueries(["listing_views"]);
 
-                if(isEditingListingImages)setIsEditingListingImages(false);
+                if(isEditingListingImages){
+                    setIsEditingListingImages(false);
+                    setImageUploadTrigger(false);
+                }
             }
             else{
                 onListingUpdateFailure();
-                if(isEditingListingImages)setIsEditingListingImages(false);
+                if(isEditingListingImages){
+                    setIsEditingListingImages(false);
+                    setImageUploadTrigger(false);
+                }
             }
         },
         () => {
             onListingUpdateFailure();
-            if(isEditingListingImages)setIsEditingListingImages(false);
+            if(isEditingListingImages){
+                setIsEditingListingImages(false);
+                setImageUploadTrigger(false);
+            }
         }
     );
 
@@ -163,11 +179,13 @@ const ListingDetailModal: React.FC = () => {
                                     {isEditingListingImages &&
                                         <div className="flex flex-col space-y-3">
                                             <ImageUploadModule
+                                                MAX_FILES={3}
                                                 imageUploadMode="edit"
+                                                setFileReadyState={setIsImageUploadReady}
                                                 actionTrigger={imageUploadTrigger}
                                                 resourceId={listingDetail?.id}
                                                 resourceLabel="Listing Image"
-                                                setFileReadyState={setIsImageUploadReady}
+                                                oldResourceImages={listingDetail.images}
                                                 pic_url_Builder={uploadListingPicURLBuilder}
                                                 updateResourceMutation={({ id, imageURLs } : {id: number, imageURLs: string[]}) => updateListingMutate({ id, imageURLs })}
                                                 deleteResourceMutation={({id, imageIds} : {id: number, imageIds: number[]}) => deleteListingImagesMutate({id, imageIds})}

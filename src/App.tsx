@@ -1,6 +1,6 @@
 import './App.css';
 
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import { useRoutes} from 'react-router-dom';
 
 import appRoutes from './Routes/AppRoutes';
@@ -32,11 +32,10 @@ function App() {
             {isAuthenticated && (
               <>
                 <SidebarMenu />
-
+                <ListingDetailModal/>
+                <UploadPhotoModal/>
                 <NotificationPopUp/>
                 <LoadingModal/>
-                <UploadPhotoModal/>
-                <ListingDetailModal/>
               </>
             )}
             

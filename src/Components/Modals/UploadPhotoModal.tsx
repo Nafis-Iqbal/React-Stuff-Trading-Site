@@ -16,7 +16,7 @@ const UploadImageModal: React.FC = () => {
 
     const {openPhotoUploadWindow, openNotificationPopUpMessage, showLoadingContent} = useGlobalUI();
     const [savedImageUrl, setSavedImageUrl] = useState("");
-    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
+    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ({});
 
     const {mutate: updateUserPictureMutate} = UserApi.useUpdateUserRQ(
         (responseData) => {
@@ -63,7 +63,7 @@ const UploadImageModal: React.FC = () => {
             openPhotoUploadWindow(false);
             
             updateUserPictureMutate({
-                ...ownUserData?.data.data,
+                id: ownUserData?.data.data.id,
                 profile_picture: res.data.secure_url
             })
             //showLoadingContent(false);

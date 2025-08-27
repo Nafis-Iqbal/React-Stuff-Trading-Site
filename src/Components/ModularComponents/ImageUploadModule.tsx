@@ -207,7 +207,7 @@ export const ImageUploadModule = ({
                     {resourceImages && resourceImages.map((image, idx) => (
                         <div className="relative flex w-[60px] h-[60px] object-cover rounded-md" key={idx}>
                             <img
-                                src={image.url}
+                                src={image.imageURL}
                                 alt={`Existing ${idx}`}
                                 width={60}
                                 height={60}

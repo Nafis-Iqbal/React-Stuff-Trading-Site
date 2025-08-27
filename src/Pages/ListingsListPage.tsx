@@ -17,7 +17,7 @@ const ListingsListPage:React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const parsedUserId = Number(userId);
 
-    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
+    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ({});
 
     // Check if the page was opened with createListing=true query parameter
     useEffect(() => {
@@ -45,16 +45,8 @@ const ListingsListPage:React.FC = () => {
     useEffect(() => {
         setListingsList(listingsListData?.data.data);
     }, [listingsListData]);
-
-    const onCreateListingSubmit = () => {
-        showLoadingContent(true);
-    }
     
     const onCreateListingSuccess = (formData: Listing) => {
-        showLoadingContent(false);
-
-        openNotificationPopUpMessage("Listing created successfully!");
-
         if(listingsListData)
         {
             setListingsList((prevListings) => [
@@ -67,8 +59,7 @@ const ListingsListPage:React.FC = () => {
     }
 
     const onCreateListingFailure = () => {
-        showLoadingContent(false);
-        openNotificationPopUpMessage("Error creating listing!");
+        //nothing to do for now
     }
 
     return (
@@ -80,7 +71,6 @@ const ListingsListPage:React.FC = () => {
                     isOpen={isCreateListingOpen} 
                     user_id={parsedUserId}
                     onClose={() => setIsCreateListingOpen(false)}
-                    onSubmit={onCreateListingSubmit}
                     onSuccess={onCreateListingSuccess}
                     onFailure={onCreateListingFailure}
                 />

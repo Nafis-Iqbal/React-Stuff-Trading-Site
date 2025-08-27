@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { TradeApi, UserApi } from "../Services/API";
 import { useParams } from "react-router-dom";
@@ -9,7 +9,7 @@ const TradesListPage:React.FC = () => {
     const { userId } = useParams();
     const parsedUserId = Number(userId);
 
-    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ();
+    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ({});
 
     const {data: tradeListData} = TradeApi.useGetUserTradeViewsRQ(
         parsedUserId,

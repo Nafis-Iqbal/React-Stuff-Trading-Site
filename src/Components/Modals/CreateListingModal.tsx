@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 
+import { useLocation, useNavigate } from "react-router-dom";
 import { isNumber } from "../../Utilities/Utilities";
 import { listingStatus } from "../../Types&Enums/Enums";
 import { ListingApi } from "../../Services/API";
 import { queryClient } from "../../Services/API/ApiInstance";
 import { ImageUploadModule } from "../ModularComponents/ImageUploadModule";
-import { update } from "lodash";
+import { useGlobalUI } from "../../Hooks/StateHooks/GlobalStateHooks";
+import ReactDOM from "react-dom";
 
 interface CreateListingModalProps{
     user_id: number;
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: () => void;
     onSuccess: (data: Listing) => void;
     onFailure: () => void;
 }
@@ -27,26 +28,45 @@ const defaultListingForm: Listing = {
     status: listingStatus.available
 };
 
-const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen, onClose, onSubmit, onSuccess, onFailure}) => {
-    const [newListingId, setNewListingId] = useState<number | null>(null);
+const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen, onClose, onSuccess, onFailure}) => {
+    const navigate = useNavigate();
+    const location = useLocation();
     
+    const [newListingId, setNewListingId] = useState<number | null>(null);
+    const [imageReadyForUpload, setImageReadyForUpload] = useState<boolean>(false);
+
     const[formData, setFormData] = useState<Listing>({...defaultListingForm, user_id});
+
+    const {showLoadingContent, openNotificationPopUpMessage} = useGlobalUI();
 
     const {mutate: createListingMutate} = ListingApi.useCreateListingRQ(
         (responseData) => {
             if(responseData.data.status === "success")
             {
                 onSuccess(formData);
+                openNotificationPopUpMessage("Listing created. Checking image upload status...")
                 queryClient.invalidateQueries(["listings"]);
+                
+                if(imageReadyForUpload) {
+                    showLoadingContent(true);
+                    setNewListingId(responseData.data.data.id);
+                }
 
-                setFormData(defaultListingForm);
+                if(!imageReadyForUpload){
+                    endWithNotification("Listing created successfully!");
+                    setFormData({...defaultListingForm, user_id});
+                    onClose();
+                    setNewListingId(null);
+                }
             }
             else{
                 onFailure();
+                endWithNotification("Failed to create listing. Try again");
             }
         },
         () => {
             onFailure();
+            endWithNotification("Failed to create listing. Try again");
         }
     );
 
@@ -55,17 +75,22 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
             if(responseData.data.status === "success")
             {
                 onSuccess(formData);
+                endWithNotification("Listing images uploaded successfully!");
                 queryClient.invalidateQueries(["listings"]);
-
-                setNewListingId(responseData.data.data.id);
-                setFormData(defaultListingForm);
+                
+                setFormData({...defaultListingForm, user_id});
+                setNewListingId(null);
+                onClose();
+                navigate(location.pathname, { replace: true });
             }
             else{
                 onFailure();
+                endWithNotification("Failed to upload listing images. Error Response. Try to update listing later");
             }
         },
         () => {
             onFailure();
+            endWithNotification("Failed to upload listing images. No Response. Try to update listing later");
         }
     );
 
@@ -74,14 +99,17 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
             if(responseData.data.status === "success")
             {
                 onSuccess(formData);
+                endWithNotification("Listing deleted successfully!");
                 queryClient.invalidateQueries(["listings"]);
             }
             else{
                 onFailure();
+                endWithNotification("Failed to delete listing. Try again");
             }
         },
         () => {
             onFailure();
+            endWithNotification("Failed to delete listing. Try again");
         }
     );
 
@@ -104,21 +132,26 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        onSubmit();
+        showLoadingContent(true);
         
         createListingMutate(formData);
-        onClose();
     }
 
     const handleClose = () => {
-        setFormData(defaultListingForm);
+        setFormData({...defaultListingForm, user_id});
 
         onClose();
+    }
+
+    const endWithNotification = (message: string) => {
+        showLoadingContent(false);
+        console.log("where??");
+        openNotificationPopUpMessage(message);
     }
 
     if(!isOpen)return null;
 
-    return (
+    return ReactDOM.createPortal(
         <div className="fixed inset-0 -top-4 flex justify-center items-center bg-gray-800 bg-opacity-50 backdrop-blur-sm z-50">
             <div className="bg-pink-200 rounded-lg p-6 shadow-lg w-full max-w-lg">
                 <h2 className="text-2xl text-pink-800 font-semibold mb-4">Create Listing</h2>
@@ -207,6 +240,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                     <ImageUploadModule
                         MAX_FILES={3}
                         imageUploadMode="create"
+                        setFileReadyState={setImageReadyForUpload}
                         actionTrigger={true}
                         resourceId={newListingId}
                         resourceLabel="Upload Listing Images"
@@ -234,7 +268,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                 </form>          
             </div>
         </div>
-    );
+    , document.body);
 }
 
 export default CreateListingModal;

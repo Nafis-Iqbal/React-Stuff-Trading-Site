@@ -24,10 +24,10 @@ declare global{
     interface EditUserInfoModalProps
     {
         isOpen: boolean;
-        defaultUserInfo: User;
+        defaultUserInfo: {id: number} & Partial<Omit<User, 'id'>>;
         onClose: () => void;
         onSubmit: () => void;
-        onSuccess: (data: User) => void;
+        onSuccess: (data: {id: number} & Partial<Omit<User, 'id'>>) => void;
         onFailure: () => void;
     }
 }
