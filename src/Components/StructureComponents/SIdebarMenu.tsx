@@ -52,7 +52,7 @@ const SidebarMenu = forwardRef<HTMLDivElement, SidebarMenuProps>(({isPopOutSideb
                         onClick={() => onNavigate(`/listings/${ownUserData?.data.data.id ?? 0}`)} 
                         className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300"
                     >
-                        Listings
+                        Your Listings
                     </button>
                 </li>
                 <li>
@@ -60,7 +60,7 @@ const SidebarMenu = forwardRef<HTMLDivElement, SidebarMenuProps>(({isPopOutSideb
                         onClick={() => onNavigate(`/bids/${ownUserData?.data.data.id ?? 0}`)} 
                         className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300"
                     >
-                        Bids
+                        Your Bids
                     </button>
                 </li>
                 <li>
@@ -68,7 +68,7 @@ const SidebarMenu = forwardRef<HTMLDivElement, SidebarMenuProps>(({isPopOutSideb
                         onClick={() => onNavigate(`/trades/${ownUserData?.data.data.id ?? 0}`)} 
                         className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300"
                     >
-                        Trades
+                        Your Trades
                     </button>
                 </li>
             </ul>

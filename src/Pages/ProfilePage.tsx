@@ -48,7 +48,11 @@ const ProfilePage: React.FC = () => {
         <div className="md:hidden min-h-[30px] bg-pink-200"></div>
 
         <main className="flex flex-col md:w-[60%] h-full space-y-2 md:space-y-5 bg-pink-200">
-            <UserInfoModule userId={parsedUserId} customStyle="p-3 mx-2 mt-2 bg-pink-100" profilePicture={userDetail.profile_picture ?? '/images/profile_picture.jpg'}/>
+            <UserInfoModule 
+              userId={parsedUserId} 
+              customStyle="p-3 mx-2 mt-2 bg-pink-100" 
+              profilePicture={userDetail.profile_picture ?? '/images/profile_picture.jpg'}
+            />
             
             {/* User Activities Info */}
             <div className='flex flex-col p-2 mx-2 bg-pink-100 rounded-md'>
@@ -81,7 +85,7 @@ const ProfilePage: React.FC = () => {
                 <h1 className='p-2 text-center text-xl md:text-2xl bg-pink-100 text-pink-800 font-semibold'>Trade History with User</h1>
 
                 <div className='flex flex-col space-y-2 mb-2'>
-                  {(completedTradesBetweenUsers && completedTradesBetweenUsers.length > 0) && (
+                  {(completedTradesBetweenUsers && completedTradesBetweenUsers.length > 0) ? (
                       completedTradesBetweenUsers.map((trade: Trade) => {
                           return (
                               <div>
@@ -102,6 +106,8 @@ const ProfilePage: React.FC = () => {
                               </div>
                           )
                       })
+                  ) : (
+                      <p className='text-pink-600 text-center'>You have no trade history with this user.</p>
                   )}
                 </div>
               </div>

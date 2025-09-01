@@ -14,6 +14,7 @@ import BidManagerModule from "../ModularComponents/BidManagerModule";
 import LoadingSpinnerBlock from "../PlaceholderComponents/LoadingSpinnerBlock";
 import { ImageViewer } from "../ElementComponents/ImageViewer";
 import { ImageUploadModule } from "../ModularComponents/ImageUploadModule";
+import { useNavigate } from "react-router-dom";
 
 const defaultListingForm: Listing = {
     id: 0,
@@ -30,6 +31,7 @@ const defaultListingForm: Listing = {
 
 const ListingDetailModal: React.FC = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const isOpen = useSelector((state: any) => state.popUps.listingDetailView.isVisible);
     const listingId = useSelector((state: any) => state.popUps.listingDetailView.listingId);
 
@@ -247,7 +249,16 @@ const ListingDetailModal: React.FC = () => {
                             </div>
                             
                             <div className="flex flex-col p-2 m-2 space-y-2 bg-pink-200">
-                                <p className="text-emerald-700 font-semibold"><span className="text-pink-700 font-bold">Posted by: </span>{listingDetail?.user_id ?? ""}</p>
+                                <button 
+                                    className="text-emerald-700 font-semibold text-left w-fit"
+                                    onClick={() => {
+                                                navigate(`/profile/${listingDetail?.user_id}`);
+                                                onCloseModal();
+                                            }
+                                    }
+                                >
+                                    <span className="text-pink-700 font-bold">Posted by: </span>{listingDetail?.user.user_name ?? ""}
+                                </button>
 
                                 <p className="text-emerald-700 font-semibold"><span className="text-pink-700 font-bold">Location: </span>{listingDetail?.location ?? ""}</p>
 

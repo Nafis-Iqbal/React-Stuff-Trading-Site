@@ -70,7 +70,7 @@ export const ListingManagerModule = ({className, ownUserId} : {ownUserId: number
             <h1 className='p-2 text-center text-xl md:text-2xl bg-pink-100 text-pink-800 font-semibold flex-shrink-0'>Listing Manager</h1>
 
             {/* Listing Filter */}
-            <div className="flex flex-col md:flex-row md:w-[100%] space-x-0 md:space-x-5">
+            <div className="flex flex-col md:flex-row md:justify-between w-full space-x-0 md:space-x-3">
                 <input 
                     type="text" 
                     placeholder="Search listings..." 
@@ -85,28 +85,28 @@ export const ListingManagerModule = ({className, ownUserId} : {ownUserId: number
                         label="Available"
                         checked={status === "available"}
                         onChange={() => handleCheckboxChange(listingStatus.available)}
-                        className="p-2 rounded-xs"
+                        className="py-2 rounded-xs"
                     />
 
                     <CustomCheckboxInput
                         label="Pending"
                         checked={status === "pending"}
                         onChange={() => handleCheckboxChange(listingStatus.pending)}
-                        className="p-2 rounded-xs"
+                        className="py-2 rounded-xs"
                     />
 
                     <CustomCheckboxInput
                         label="Sold"
                         checked={status === "sold"}
                         onChange={() => handleCheckboxChange(listingStatus.sold)}
-                        className="p-2 rounded-xs"
+                        className="py-2 rounded-xs"
                     />
 
                     <CustomCheckboxInput
                         label="Featured"
                         checked={isFeatured}
                         onChange={handleFeaturedFilterChange}
-                        className="p-2 rounded-xs"
+                        className="py-2 rounded-xs"
                     />
                 </div>
 

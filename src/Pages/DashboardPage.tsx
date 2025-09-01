@@ -111,6 +111,13 @@ const DashboardPage:React.FC = () => {
                     </button>
                 </div>
 
+                {/* Disclaimer */}
+                <div className="bg-yellow-100 border-l-4 border-yellow-500 p-3 mx-2">
+                    <p className="text-yellow-700 text-sm">
+                        <strong>Note:</strong> Product data is demo content to showcase site functionality.
+                    </p>
+                </div>
+
                 {/* Listings browse list */}
                 <div className="bg-pink-200 flex flex-1">
                     <div className="flex-1 md:max-h-[750px] overflow-y-auto p-2 md:p-3 box-border rounded-md custom-scrollbar">

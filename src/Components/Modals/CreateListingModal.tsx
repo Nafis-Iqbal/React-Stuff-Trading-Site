@@ -170,7 +170,8 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                             value={formData.title}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm 
+                            focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                     </div>
 
@@ -186,7 +187,8 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                             value={formData.description}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm 
+                            focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                     </div>
 
@@ -202,7 +204,8 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                             value={formData.location}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm 
+                            focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                     </div>
 
@@ -218,7 +221,8 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                             value={formData.exchange_items}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm 
+                            focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                     </div>
 
@@ -234,7 +238,8 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({user_id, isOpen,
                             value={formData.price}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm 
+                            focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                     </div>
 
