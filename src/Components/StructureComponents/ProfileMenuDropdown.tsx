@@ -21,10 +21,10 @@ const ProfileInfoDropdownBase = forwardRef<HTMLDivElement, ProfileInfoDropdownPr
                         {userInfo.email}
                     </li>
                     <li className="text-emerald-500">
-                        {userInfo.role}
+                        <span className="font-semibold">Role:</span> {userInfo.role?.toUpperCase()}
                     </li>
                     <li className="text-yellow-600">
-                        {userInfo.credits ?? 10}$
+                        <span className="font-semibold">Balance:</span> {userInfo.credits ?? 10}$
                     </li>
                 </ul>
             </div>

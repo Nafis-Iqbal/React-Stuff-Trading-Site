@@ -9,6 +9,7 @@ import TagManagerModule from '../Components/ModularComponents/TagManagerModule';
 import { role } from '../Types&Enums/Enums';
 import { UserManagerModule } from '../Components/ModularComponents/UserManagerModule';
 import TradeInfoBlock from '../Components/ElementComponents/TradeInfoBlock';
+import { ListingManagerModule } from '../Components/ModularComponents/ListingManagerModule';
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();  
@@ -43,7 +44,7 @@ const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-1 flex-col md:flex-row bg-pink-200 md:bg-pink-100 text-white min-h-screen">
+    <div className="flex flex-1 flex-col md:flex-row bg-pink-200 md:bg-pink-100 overflow-x-hidden text-white min-h-screen">
         <div className="md:hidden min-h-[30px] bg-pink-200"></div>
 
         <main className="flex flex-col md:w-[60%] h-full space-y-2 md:space-y-5 bg-pink-200">
@@ -113,6 +114,9 @@ const ProfilePage: React.FC = () => {
 
                 {/* User Role Management Panel */}
                 <UserManagerModule ownUserId={ownUser.id} />
+
+                {/* Listing Status Management Panel */}
+                <ListingManagerModule ownUserId={ownUser.id} />
               </div>
             }  
         </main>

@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useGlobalUI } from "../../Hooks/StateHooks/GlobalStateHooks";
+import { ListingApi } from "../../Services/API";
+import { queryClient } from "../../Services/API/ApiInstance";
 
 interface ListingViewProps{
     listingId: number;
@@ -16,6 +18,8 @@ interface ListingViewProps{
     bestBidUserPhoto?: string;
     bestBidDescription?: string;
     bestBidPrice?: number;
+    isFeatured?: boolean;
+    showAdminControls?: boolean;
 }
 
 const ListingViewBlock: React.FC<ListingViewProps> = ({
@@ -29,14 +33,40 @@ const ListingViewBlock: React.FC<ListingViewProps> = ({
     bestBidUserName,
     bestBidUserPhoto,
     bestBidDescription,
-    bestBidPrice
+    bestBidPrice,
+    isFeatured = false,
+    showAdminControls = false
 }) => {
     const navigate = useNavigate();
     
-    const {showListingDetail} = useGlobalUI();
+    const {showListingDetail, openNotificationPopUpMessage} = useGlobalUI();
+
+    const {mutate: updateListingMutate} = ListingApi.useUpdateListingRQ(
+        (responseData) => {
+            if(responseData.data.status === "success")
+            {
+                queryClient.invalidateQueries(["listing_views"]);
+                queryClient.invalidateQueries(["listings"]);
+                openNotificationPopUpMessage("Listing featured status updated successfully");
+            }
+            else{
+                openNotificationPopUpMessage("Error updating listing featured status");
+            }
+        },
+        () => {
+            openNotificationPopUpMessage("Error updating listing featured status");
+        }
+    );
+
+    const handleToggleFeatured = () => {
+        updateListingMutate({
+            id: listingId,
+            isFeatured: !isFeatured
+        });
+    };
 
     return(
-        <div className="flex flex-col w-full p-2 bg-pink-100 rounded-md">
+        <div className="flex flex-col w-full p-2 md:py-4 md:px-2 bg-pink-100 rounded-md shadow-lg">
             <p className="p-2 ml-1 text-gray-600 text-2xl font-semibold">{listingTitle}</p>
 
             <div className="flex flex-col md:flex-row w-full">
@@ -67,7 +97,36 @@ const ListingViewBlock: React.FC<ListingViewProps> = ({
                         </div>
                     )}
                     
-                    <button className="p-2 rounded-sm bg-emerald-400 hover:bg-emerald-500 text-white disabled:bg-gray-400 disabled:cursor-not-allowed" onClick={() => showListingDetail(listingId)}>View Listing</button>
+                    <div className="flex flex-col space-y-2">
+                        <button className="p-2 rounded-sm bg-emerald-400 hover:bg-emerald-500 text-white disabled:bg-gray-400 disabled:cursor-not-allowed" onClick={() => showListingDetail(listingId)}>View Listing</button>
+                        
+                        {showAdminControls && (
+                            <button 
+                                onClick={handleToggleFeatured}
+                                className={`p-2 rounded-sm text-white transition-colors flex items-center justify-center space-x-2 ${
+                                    isFeatured 
+                                        ? 'bg-red-500 hover:bg-red-600' 
+                                        : 'bg-yellow-500 hover:bg-yellow-600'
+                                }`}
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="w-6 h-6"
+                                >
+                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <span>{isFeatured ? 'Remove Featured' : 'Make Featured'}</span>
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="w-6 h-6"
+                                >
+                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

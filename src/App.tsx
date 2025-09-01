@@ -27,7 +27,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Suspense>
         {isAuthenticated ? <Navbar/> : <LandingPageBar/>}
-        <div className={`relative flex flex-1 bg-pink-100 min-h-screen ${isAuthenticated ? 'pt-20' : ''}`}>
+        <div className={`relative flex flex-1 bg-pink-100 overflow-x-hidden min-h-screen ${isAuthenticated ? 'pt-20' : ''}`}>
           <div className="flex flex-col flex-1 md:flex-row">
             {isAuthenticated && (
               <>

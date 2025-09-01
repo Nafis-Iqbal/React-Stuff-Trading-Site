@@ -18,17 +18,23 @@ const LoginPage: React.FC = () => {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await loginUser(email, password);
+    setLoginErrorMessage(""); // Clear any previous error messages
+    
+    try {
+      const response = await loginUser(email, password);
 
-    if (response.data?.auth_token) {
-      sessionStorage.setItem('auth_token', response.data?.auth_token);
-      sessionStorage.setItem('isAuthenticated', "true");
-      dispatch(setAuth({ token: response.data.auth_token, user_id: response.data.user_id }));
-      
-      navigate('/dashboard');
-      setLoginErrorMessage("");
-    }
-    else{
+      if (response.data?.auth_token) {
+        sessionStorage.setItem('auth_token', response.data?.auth_token);
+        sessionStorage.setItem('isAuthenticated', "true");
+        dispatch(setAuth({ token: response.data.auth_token, user_id: response.data.user_id }));
+        
+        navigate('/dashboard');
+        setLoginErrorMessage("");
+      }
+      else{
+        setLoginErrorMessage("Wrong username or password.");
+      }
+    } catch (error) {
       setLoginErrorMessage("Wrong username or password.");
     }
   };
@@ -104,7 +110,11 @@ const LoginPage: React.FC = () => {
           <div>
             <div className="flex justify-between items-center">
               <label htmlFor="password" className="block text-white">Password</label>
-              <div className="text-red-500 text-sm text-center">{loginErrorMessage}</div>
+              {loginErrorMessage && (
+                <div className="text-emerald-400 text-sm font-semibold px-2 py-1 rounded">
+                  {loginErrorMessage}
+                </div>
+              )}
             </div>
             
             <input
@@ -112,7 +122,7 @@ const LoginPage: React.FC = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border border-maroon-600 bg-black text-white rounded-md focus:outline-none focus:ring-2 focus:ring-maroon-500"
+              className={`w-full p-3 border ${loginErrorMessage ? 'border-red-500' : 'border-maroon-600'} bg-black text-white rounded-md focus:outline-none focus:ring-2 focus:ring-maroon-500`}
               required
             />
           </div>

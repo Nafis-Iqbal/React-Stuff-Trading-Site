@@ -22,6 +22,7 @@ const defaultListingForm: Listing = {
     description: '',
     location: '',
     exchange_items: '',
+    isFeatured: false,
     price: 0,
     status: listingStatus.available,
     listingPicture: ''
@@ -246,6 +247,8 @@ const ListingDetailModal: React.FC = () => {
                             </div>
                             
                             <div className="flex flex-col p-2 m-2 space-y-2 bg-pink-200">
+                                <p className="text-emerald-700 font-semibold"><span className="text-pink-700 font-bold">Posted by: </span>{listingDetail?.user_id ?? ""}</p>
+
                                 <p className="text-emerald-700 font-semibold"><span className="text-pink-700 font-bold">Location: </span>{listingDetail?.location ?? ""}</p>
 
                                 <p className="text-gray-700"><span className="text-pink-700 font-bold">Description: </span>{listingDetail?.description ?? ""}</p>

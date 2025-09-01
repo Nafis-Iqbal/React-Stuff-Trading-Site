@@ -1,30 +1,69 @@
-import React, { useEffect, useState } from "react";
-import { ListingApi } from "../Services/API";
+import React, { useEffect, useState, useMemo } from "react";
+import { ListingApi, UserApi } from "../Services/API";
 
 import ListingViewBlock from "../Components/ElementComponents/ListingViewBlock";
+import { useNavigate } from "react-router-dom";
+import { useGlobalUI } from "../Hooks/StateHooks/GlobalStateHooks";
+
+type BannerImageProps = {
+    imageUrl: string;
+    listingId: number;
+}
 
 const DashboardPage:React.FC = () => {
-    const images = [
-        '/images/joystick.jpg',
-        '/images/keyboard.jpg',
-        '/images/mouse.jpg',
-        '/images/sofa.jpg',
-    ];
-
+    const navigate = useNavigate();
+    
     const [currentBannerImageIndex, setCurrentBannerImageIndex] = useState(0);
     const [fade, setFade] = useState(false);
 
-    const {data: listingsViewListData} = ListingApi.useGetAllListingViewsRQ(
-        () => {
+    const {showListingDetail} = useGlobalUI();
 
-        },
-        () => {
+    const {data: ownUserData} = UserApi.useGetAuthenticatedUserRQ({});
 
-        },
-        true
-    );
+    const {data: listingsViewListData} = ListingApi.useGetAllListingViewsRQ(true);
 
     const listingsViewList = listingsViewListData?.data.data;
+
+    // Create dynamic images array from featured listings
+    const images = useMemo((): BannerImageProps[] => {
+        if (!listingsViewList) {
+            // Fallback to hardcoded images if data is not loaded yet
+            return [
+                { imageUrl: '/images/joystick.jpg', listingId: 0 },
+                { imageUrl: '/images/keyboard.jpg', listingId: 0 },
+                { imageUrl: '/images/mouse.jpg', listingId: 0 },
+                { imageUrl: '/images/sofa.jpg', listingId: 0 },
+            ];
+        }
+
+        // Filter featured listings and extract their first image with listing ID
+        const featuredListings = listingsViewList.filter((listing: any) => listing.isFeatured === true);
+        
+        // Get first image and listing ID from each featured listing
+        const featuredImages: BannerImageProps[] = featuredListings.map((listing: any) => ({
+            imageUrl: listing?.images?.[0]?.imageURL ?? '/images/keyboard.jpg',
+            listingId: listing.id ?? 0
+        }));
+
+        // Ensure we have at least 4 images for the carousel
+        const minimumImages: BannerImageProps[] = [
+            { imageUrl: '/images/joystick.jpg', listingId: 0 },
+            { imageUrl: '/images/keyboard.jpg', listingId: 0 },
+            { imageUrl: '/images/mouse.jpg', listingId: 0 },
+            { imageUrl: '/images/sofa.jpg', listingId: 0 },
+        ];
+
+        if (featuredImages.length >= 4) {
+            return featuredImages.slice(0, 4); // Take first 4 featured images
+        } else {
+            // If less than 4 featured listings, pad with hardcoded images
+            const paddedImages = [...featuredImages];
+            while (paddedImages.length < 4) {
+                paddedImages.push(minimumImages[paddedImages.length % minimumImages.length]);
+            }
+            return paddedImages;
+        }
+    }, [listingsViewList]);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -42,23 +81,39 @@ const DashboardPage:React.FC = () => {
         <div className="flex flex-col md:flex-row flex-1 w-[100%] md:w-[80%]">
             {/* Banner Image Section for small screens*/}
             <div className="relative h-[350px] md:hidden py-2 bg-pink-200">
-                <img src={images[currentBannerImageIndex]} alt="Mouse" className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out 
-                    ${fade ? 'opacity-0' : 'opacity-100'}`}></img>
-                <button className="absolute bottom-3 right-1 p-2 bg-emerald-400 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-sm" disabled>View Listing</button>
+                <img 
+                    src={images[currentBannerImageIndex].imageUrl} 
+                    alt="Mouse" 
+                    className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out ${fade ? 'opacity-0' : 'opacity-100'}`}
+                />
+
+                <button 
+                    className="absolute bottom-3 right-1 p-2 bg-emerald-400 hover:bg-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-sm" 
+                    disabled={images[currentBannerImageIndex].listingId === 0}
+                    onClick={() => images[currentBannerImageIndex].listingId !== 0 && showListingDetail(images[currentBannerImageIndex].listingId)}
+                >
+                    View Listing
+                </button>
             </div>
             
             {/* Main content */}
-            <main className="flex flex-col md:w-[70%] mt-3 bg-pink-100 rounded-md">
+            <main className="flex flex-col md:w-[70%] bg-pink-100 rounded-md">
                 {/* Create new listing options */}
                 <div className="flex py-4 justify-between bg-pink-200 border-b-4 border-pink-400">
                     <h3 className="p-2 text-xl md:text-2xl mr-10 font-semibold text-gray-700">Got something to trade?</h3>
                     
-                    <button className="p-2 mr-1 md:mr-3 bg-emerald-400 hover:bg-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm md:text-base text-white rounded-sm" disabled>Get Started</button>
+                    <button 
+                        className="p-2 mr-1 md:mr-3 bg-emerald-400 hover:bg-emerald-500 text-sm md:text-base text-white
+                         disabled:bg-gray-400 disabled:cursor-not-allowed  rounded-sm" 
+                        onClick={() => navigate(`/listings/${ownUserData?.data.data.id ?? 0}?createListing=true`)}
+                    >
+                        Get Started
+                    </button>
                 </div>
 
                 {/* Listings browse list */}
                 <div className="bg-pink-200 flex flex-1">
-                    <div className="flex-1 md:max-h-[750px] overflow-y-auto p-3 m-3 box-border rounded-md bg-pink-300">
+                    <div className="flex-1 md:max-h-[750px] overflow-y-auto p-2 md:p-3 box-border rounded-md custom-scrollbar">
                         <ul className="space-y-4 mb-10">
                             {listingsViewList && listingsViewList.length > 0 && (listingsViewList.map(
                                 (listing: any) => {
@@ -89,17 +144,38 @@ const DashboardPage:React.FC = () => {
             {/* Banner Image Section for large screens*/}
             <aside className="hidden md:flex md:flex-col md:w-[30%]  bg-pink-300 rounded-sm border-l-4 border-pink-600">
                 <div className="relative h-[50%] bg-pink-200 border-b-4 border-pink-500">
-                    <img src={images[currentBannerImageIndex]} alt="some product" className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out 
-                    ${fade ? 'opacity-0' : 'opacity-100'}`}></img>
+                    <img 
+                        src={images[currentBannerImageIndex].imageUrl} 
+                        alt="some product" 
+                        className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out 
+                            ${fade ? 'opacity-0' : 'opacity-100'}`}
+                    />
 
-                    <button className="absolute bottom-3 right-2 p-2 bg-emerald-400 hover:bg-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md" disabled>View Listing</button>
+                    <button 
+                        className="absolute bottom-3 right-2 p-2 bg-emerald-400 hover:bg-emerald-500 
+                        disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md" 
+                        disabled={images[currentBannerImageIndex].listingId === 0}
+                        onClick={() => images[currentBannerImageIndex].listingId !== 0 && showListingDetail(images[currentBannerImageIndex].listingId)}
+                    >
+                        View Listing
+                    </button>
                 </div>
 
                 <div className="relative h-[50%] bg-pink-200 border-b-4 border-pink-500">
-                    <img src={images[(currentBannerImageIndex + 2) % images.length]} alt="some product" className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out 
-                    ${fade ? 'opacity-0' : 'opacity-100'}`}></img>
+                    <img 
+                        src={images[(currentBannerImageIndex + 2) % images.length].imageUrl} 
+                        alt="some product" className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out 
+                        ${fade ? 'opacity-0' : 'opacity-100'}`}
+                    />
 
-                    <button className="absolute bottom-3 right-2 p-2 bg-emerald-400 hover:bg-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md" disabled>View Listing</button>
+                    <button 
+                        className="absolute bottom-3 right-2 p-2 bg-emerald-400 hover:bg-emerald-500 text-white 
+                        disabled:bg-gray-400 disabled:cursor-not-allowed  rounded-md" 
+                        disabled={images[(currentBannerImageIndex + 2) % images.length].listingId === 0}
+                        onClick={() => images[(currentBannerImageIndex + 2) % images.length].listingId !== 0 && showListingDetail(images[(currentBannerImageIndex + 2) % images.length].listingId)}
+                    >
+                        View Listing
+                    </button>
                 </div>
             </aside>
         </div>

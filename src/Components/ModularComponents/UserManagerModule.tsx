@@ -8,6 +8,7 @@ export const UserManagerModule = ({className, ownUserId} : {ownUserId: number, c
     const [userRole, setUserRole] = useState<role | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
+    const [showUsers, setShowUsers] = useState<boolean>(true);
 
     const { data: allUsersData } = UserApi.useGetAllUsersRQ();
 
@@ -61,7 +62,7 @@ export const UserManagerModule = ({className, ownUserId} : {ownUserId: number, c
             <h1 className='p-2 text-center text-xl md:text-2xl bg-pink-100 text-pink-800 font-semibold flex-shrink-0'>User Manager</h1>
 
             {/* User Filter */}
-            <div className="flex flex-col md:flex-row md:w-[100%] space-x-0 md:space-x-5">
+            <div className="flex flex-col md:flex-row justify-between md:w-[100%] space-x-0 md:space-x-5">
                 <input 
                     type="text" 
                     placeholder="Search users..." 
@@ -90,11 +91,28 @@ export const UserManagerModule = ({className, ownUserId} : {ownUserId: number, c
                 <button className="md:w-[20%] px-2 py-1 bg-emerald-400 hover:bg-emerald-500 text-white rounded-md">Search</button>
             </div>
 
-            <div className='flex flex-col overflow-y-auto flex-1 pr-2'>
-                {filteredUsers?.map((user: any) => (
-                    <UserViewBlock key={user.id} userDetail={user} ownUserId={ownUserId}/>
-                ))}
+            {/* Show/Hide Users Button */}
+            <div className="flex justify-end">
+                <button 
+                    onClick={() => setShowUsers(!showUsers)}
+                    className="px-3 py-1 bg-pink-500 hover:bg-pink-600 text-white text-sm rounded-md"
+                >
+                    {showUsers ? 'Hide Users' : 'Show Users'}
+                </button>
             </div>
+
+            {showUsers ? (
+                <div className='flex flex-col overflow-y-auto flex-1 pr-2'>
+                    {filteredUsers?.map((user: any) => (
+                        <UserViewBlock key={user.id} userDetail={user} ownUserId={ownUserId}/>
+                    ))}
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center flex-1 text-gray-600">
+                    <p className="text-lg font-medium">Users list is hidden</p>
+                    <p className="text-sm">Click "Show Users" to view the user list</p>
+                </div>
+            )}
         </div>
     );
 };

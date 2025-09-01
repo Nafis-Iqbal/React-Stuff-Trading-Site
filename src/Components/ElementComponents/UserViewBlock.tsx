@@ -13,7 +13,7 @@ export const UserViewBlock = ({ownUserId, userDetail}: {ownUserId: number, userD
     const navigate = useNavigate();
 
     const [isUpdateRoleConfirmationVisible, setIsUpdateRoleConfirmationVisible] = useState<boolean>(false);
-    const {openNotificationPopUpMessage, showLoadingContent} = useGlobalUI();
+    const {openNotificationPopUpMessage} = useGlobalUI();
 
     const {mutate: updateUserRole} = UserApi.useUpdateUserRoleRQ(
         (responseData) => {

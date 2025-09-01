@@ -27,6 +27,7 @@ declare global{
         listingPicture?: string;
         bidsCount?: number;
         highestBidPrice?: number;
+        isFeatured: boolean;
         topBid?: Bid;
         imageURLs?: string[];
         images?: Image[];

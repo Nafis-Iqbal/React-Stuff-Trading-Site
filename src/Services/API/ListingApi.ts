@@ -197,18 +197,12 @@ const getAllListingViews = async (): Promise<AxiosResponse> => {
     }
 };
 
-export const useGetAllListingViewsRQ = (onSuccessFn: () => void, onErrorFn: () => void, enabled: boolean) => {
+export const useGetAllListingViewsRQ = (enabled: boolean) => {
     return useQuery({
         queryKey: ['listing_views'],
         queryFn: getAllListingViews,
         staleTime: 30 * 1000,
         cacheTime: 30 * 1000,
-        onSuccess: () => {
-            onSuccessFn();
-        },
-        onError: () => {
-            onErrorFn();
-        },
         enabled
     });
 };

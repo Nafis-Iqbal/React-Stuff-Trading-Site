@@ -110,8 +110,11 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
         setIsSyncingBidSubmission(false);
     };
 
-    const isBidListFetched = bidList && bidList.length > 0;
-    
+    const isBidListFilled = bidList && bidList.length > 0;
+    const listingOwnedByUser = listingDetailData.user_id === userData.id;
+    const bidOfUserOnListingExists = isBidListFilled && bidList.find(bid => bid.bidder_id === userData.id);
+    const enableBidCreation = !listingOwnedByUser && !bidOfUserOnListingExists;
+
     return (
         <>
             {/* BIDS MANAGER */}
@@ -121,7 +124,7 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
                     <p className="px-1 py-2 mx-2 my-1 text-lg md:text-xl bg-pink-200 text-pink-700 font-semibold rounded-sm">Bids</p>
 
                     <ul className="p-1 m-1 space-y-1 max-h-[300px] md:max-h-[400px] overflow-y-auto">
-                        {(bidList && bidList.length > 0) ? (bidList.map(
+                        {isBidListFilled ? (bidList.map(
                             (bid) => {
                                 return (
                                     <li>
@@ -149,7 +152,7 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
                 </div>
 
                 {/* Bids Creation Section*/}
-                {(listingDetailData.user_id !== userData.id && isBidListFetched && !bidList.find(bid => bid.bidder_id === userData.id)) ? (
+                {enableBidCreation ? (
                     <div className="flex flex-col flex-1 p-1 my-2 max-h-fit justify-start bg-pink-400 rounded-md">
                         <form onSubmit={(e) => handleCreateBidSubmit(e)}>
                             <p className="ml-2 my-2 text-lg md:text-xl font-semibold text-white">Create Bid</p>
@@ -189,6 +192,8 @@ const BidManagerModule: React.FC<BidManagerProps> = ({listingDetailData, userDat
                             </div>
                         </form>
                     </div>
+                ) : listingOwnedByUser ? (
+                    <div className="text-pink-700 text-center p-2 mb-5">You cannot bid on your own listing</div>
                 ) : (
                     <div className="text-pink-700 text-center p-2 mb-5">You have already made a bid on this listing</div>
                 )}

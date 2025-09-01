@@ -25,6 +25,7 @@ const defaultListingForm: Listing = {
     location: '',
     exchange_items: '',
     price: 0,
+    isFeatured: false,
     status: listingStatus.available
 };
 

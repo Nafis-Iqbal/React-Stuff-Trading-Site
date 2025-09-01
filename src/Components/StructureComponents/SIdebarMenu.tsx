@@ -38,27 +38,47 @@ const SidebarMenu = forwardRef<HTMLDivElement, SidebarMenuProps>(({isPopOutSideb
 
             <div className="bg-pink-400 p-3 text-xl text-center text-pink-100">Pages</div>
 
-            <ul className="flex flex-col space-y-1">
+            <ul className="flex flex-col">
                 <li>
-                    <button onClick={() => onNavigate("/dashboard")} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Dashboard</button>
+                    <button 
+                        onClick={() => onNavigate("/dashboard")} 
+                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300"
+                    >
+                        Dashboard
+                    </button>
                 </li>
                 <li>
-                    <button onClick={() => onNavigate(`/listings/${ownUserData?.data.data.id ?? 0}`)} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Listings</button>
+                    <button 
+                        onClick={() => onNavigate(`/listings/${ownUserData?.data.data.id ?? 0}`)} 
+                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300"
+                    >
+                        Listings
+                    </button>
                 </li>
                 <li>
-                    <button onClick={() => onNavigate(`/bids/${ownUserData?.data.data.id ?? 0}`)} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Bids</button>
+                    <button 
+                        onClick={() => onNavigate(`/bids/${ownUserData?.data.data.id ?? 0}`)} 
+                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300"
+                    >
+                        Bids
+                    </button>
                 </li>
                 <li>
-                    <button onClick={() => onNavigate(`/trades/${ownUserData?.data.data.id ?? 0}`)} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Trades</button>
+                    <button 
+                        onClick={() => onNavigate(`/trades/${ownUserData?.data.data.id ?? 0}`)} 
+                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300"
+                    >
+                        Trades
+                    </button>
                 </li>
             </ul>
 
             <div className="bg-pink-400 p-3 text-xl text-center text-pink-100">Quick Actions</div>
             
-            <ul className="flex flex-col space-y-1">
+            <ul className="flex flex-col">
                 <li>
                     <button 
-                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 
+                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300 
                         disabled:bg-gray-400 disabled:cursor-not-allowed"
                         onClick={() => onNavigate(`/listings/${ownUserData?.data.data.id ?? 0}?createListing=true`)}
                     >
@@ -66,21 +86,44 @@ const SidebarMenu = forwardRef<HTMLDivElement, SidebarMenuProps>(({isPopOutSideb
                     </button>
                 </li>
                 <li>
-                    <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Show Popular Listings</button>
+                    <button 
+                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300
+                        disabled:bg-gray-400 disabled:cursor-not-allowed" 
+                        disabled
+                    >
+                        Show Popular Listings
+                    </button>
                 </li>
                 <li>
-                    <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Show Nearby Listings</button>
+                    <button 
+                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300
+                        disabled:bg-gray-400 disabled:cursor-not-allowed" 
+                        disabled
+                    >
+                        Show Nearby Listings
+                    </button>
                 </li>
                 <li>
-                    <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Show Pending Trades</button>
+                    <button 
+                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300
+                        disabled:bg-gray-400 disabled:cursor-not-allowed" 
+                        disabled
+                    >
+                        Show Pending Trades
+                    </button>
                 </li>
             </ul>
 
             <div className="bg-pink-400 p-3 text-xl text-center text-pink-100">Personalize</div>
             
-            <ul className="flex flex-col space-y-1">
+            <ul className="flex flex-col">
                 <li>
-                    <button onClick={() => onNavigate(`/profile/${ownUserData?.data.data.id ?? 0}`)} className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100">Profile</button>
+                    <button 
+                        onClick={() => onNavigate(`/profile/${ownUserData?.data.data.id ?? 0}`)} 
+                        className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 text-pink-100 border-b-2 border-pink-300"
+                    >
+                        Profile
+                    </button>
                 </li>
                 <li>
                     <button className="w-[100%] p-2 bg-pink-500 hover:bg-pink-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-pink-100" disabled>Settings</button>
