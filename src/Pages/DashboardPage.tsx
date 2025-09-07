@@ -84,7 +84,7 @@ const DashboardPage:React.FC = () => {
                 <img 
                     src={images[currentBannerImageIndex].imageUrl} 
                     alt="Mouse" 
-                    className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out ${fade ? 'opacity-0' : 'opacity-100'}`}
+                    className={`object-cover h-full w-full w-auto absolute transition-opacity duration-500 ease-in-out ${fade ? 'opacity-0' : 'opacity-100'}`}
                 />
 
                 <button 
@@ -154,7 +154,7 @@ const DashboardPage:React.FC = () => {
                     <img 
                         src={images[currentBannerImageIndex].imageUrl} 
                         alt="some product" 
-                        className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out 
+                        className={`object-cover h-full w-full absolute transition-opacity duration-500 ease-in-out 
                             ${fade ? 'opacity-0' : 'opacity-100'}`}
                     />
 
@@ -171,7 +171,8 @@ const DashboardPage:React.FC = () => {
                 <div className="relative h-[50%] bg-pink-200 border-b-4 border-pink-500">
                     <img 
                         src={images[(currentBannerImageIndex + 2) % images.length].imageUrl} 
-                        alt="some product" className={`object-cover h-full w-auto absolute transition-opacity duration-500 ease-in-out 
+                        alt="some product" 
+                        className={`object-cover h-full w-full absolute transition-opacity duration-500 ease-in-out 
                         ${fade ? 'opacity-0' : 'opacity-100'}`}
                     />
 
