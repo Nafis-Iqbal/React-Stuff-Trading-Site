@@ -80,11 +80,11 @@ const DashboardPage:React.FC = () => {
     return (
         <div className="flex flex-col md:flex-row flex-1 w-[100%] md:w-[80%]">
             {/* Banner Image Section for small screens*/}
-            <div className="relative h-[350px] md:hidden py-2 bg-pink-200">
+            <div className="relative h-[350px] md:hidden pb-2 bg-pink-200">
                 <img 
                     src={images[currentBannerImageIndex].imageUrl} 
                     alt="Mouse" 
-                    className={`object-cover h-full w-full w-auto absolute transition-opacity duration-500 ease-in-out ${fade ? 'opacity-0' : 'opacity-100'}`}
+                    className={`object-cover h-full w-full absolute transition-opacity duration-500 ease-in-out ${fade ? 'opacity-0' : 'opacity-100'}`}
                 />
 
                 <button 
