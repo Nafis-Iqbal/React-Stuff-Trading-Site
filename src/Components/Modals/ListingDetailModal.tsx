@@ -145,14 +145,14 @@ const ListingDetailModal: React.FC = () => {
 
     return ReactDOM.createPortal(
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm">
-            <div className="flex flex-col bg-pink-200 rounded-lg p-4 m-1 shadow-lg w-[95vw] md:w-[75vw] h-[80vh] md:h-[85vh] overflow-y-auto">
+            <div className="z-55 flex flex-col bg-pink-200 rounded-lg p-2 md:p-4 m-1 shadow-lg w-[95vw] md:w-[75vw] h-[80vh] md:h-[85vh] overflow-y-auto">
                 <div className="flex text-center justify-between bg-pink-300 rounded-md">
                     <div></div>
                     
                     <h2 className="flex text-center justify-center p-2 my-2 bg-pink-300 text-2xl md:text-3xl text-pink-800 font-semibold rounded-md">{listingDetail?.title}</h2> 
                 
                     <button 
-                        className="p-2 m-3  bg-red-500 hover:bg-red-600 text-white rounded-sm" 
+                        className="p-2 m-3 h-fit bg-red-500 hover:bg-red-600 text-white rounded-sm" 
                         onClick={() => onCloseModal()}
                     >
                         <FaWindowClose/>
